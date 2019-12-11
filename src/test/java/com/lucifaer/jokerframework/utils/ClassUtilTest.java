@@ -1,12 +1,9 @@
 package com.lucifaer.jokerframework.utils;
 
-import com.lucifaer.jokerframework.data.BaseDataModel;
 import com.lucifaer.jokerframework.data.BaseExploitDataModel;
 import org.junit.Test;
 
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class ClassUtilTest {
 

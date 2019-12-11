@@ -3,11 +3,14 @@ package com.lucifaer.jokerframework.utils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class ClassUtil {
     public static Map<String, Class> getAllClassByAbstractClass(Class c) {
@@ -55,6 +58,35 @@ public class ClassUtil {
                 if ("file".equals(protocol)) {
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
                     findAndAddClassesInPackageByFile(packageName, filePath, recursive, classes);
+                }
+                else if ("jar".equals(protocol)) {
+                    try {
+                        JarFile jarFile = ((JarURLConnection) url.openConnection()).getJarFile();
+                        Enumeration<JarEntry> entries = jarFile.entries();
+                        while (entries.hasMoreElements()) {
+                            JarEntry entry = entries.nextElement();
+                            String name = entry.getName();
+                            if (name.charAt(0) == '/') {
+                                name = name.substring(1);
+                            }
+                            if (name.startsWith(packageDirName)) {
+                                int idx = name.lastIndexOf('/');
+                                if (idx != -1) {
+                                    packageName = name.substring(0, idx).replace('/', '.');
+                                    if (name.endsWith(".class") && !entry.isDirectory()) {
+                                        String className = name.substring(packageName.length() + 1, name.length() - 6);
+                                        try {
+                                            classes.put(className, Class.forName(packageName + '.' + className));
+                                        } catch (ClassNotFoundException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } catch (IOException e) {
