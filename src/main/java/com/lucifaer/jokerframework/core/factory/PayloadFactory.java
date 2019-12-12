@@ -1,6 +1,6 @@
 package com.lucifaer.jokerframework.core.factory;
 
-import com.lucifaer.jokerframework.data.BaseExploitDataModel;
+import com.lucifaer.jokerframework.data.ExploitDataModel.BaseExploitDataModel;
 import com.lucifaer.jokerframework.modules.Payload;
 import com.lucifaer.jokerframework.utils.ClassUtil;
 import org.springframework.beans.factory.FactoryBean;

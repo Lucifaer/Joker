@@ -1,6 +1,6 @@
 package com.lucifaer.jokerframework.utils;
 
-import com.lucifaer.jokerframework.data.BaseExploitDataModel;
+import com.lucifaer.jokerframework.data.ExploitDataModel.BaseExploitDataModel;
 import org.junit.Test;
 
 import java.util.Map;

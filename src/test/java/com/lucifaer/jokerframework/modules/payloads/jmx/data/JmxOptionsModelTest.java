@@ -1,6 +1,6 @@
 package com.lucifaer.jokerframework.modules.payloads.jmx.data;
 
-import com.lucifaer.jokerframework.data.JmxDataModel;
+import com.lucifaer.jokerframework.data.ExploitDataModel.JmxDataModel;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class JmxOptionsModelTest {
     @Test
-    public void testInit() throws Exception {
+    public void testInit() {
         Map<String, String> testOptions = new HashMap<>();
         testOptions.put("exploitModeName", "install");
         testOptions.put("targetUrl", "127.0.0.1:23333");
@@ -24,7 +24,7 @@ public class JmxOptionsModelTest {
     }
 
     @Test
-    public void otherInit() throws Exception {
+    public void otherInit() {
         testInit();
         assertEquals("install", JmxDataModel.exploitModeName);
         assertEquals("127.0.0.1:23333", JmxDataModel.targetUrl);
