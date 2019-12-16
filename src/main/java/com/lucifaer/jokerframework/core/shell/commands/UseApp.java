@@ -1,6 +1,9 @@
 package com.lucifaer.jokerframework.core.shell.commands;
 
+import com.lucifaer.jokerframework.core.WiringBeans;
+import com.lucifaer.jokerframework.core.mode.ExploitMode;
 import com.lucifaer.jokerframework.core.shell.Result;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -64,6 +67,14 @@ public class UseApp {
         else {
             echo("you should set payload first");
         }
+    }
+
+    @ShellMethod(value = "run exploitation", key = "exploit", group = "Joker")
+    public void exploit() throws Exception {
+        params.put("installUrl", "http://127.0.0.1:9999");
+        ExploitMode.initModel(params);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WiringBeans.class);
+        context.getBean("execute");
     }
 
     @ShellMethodAvailability({"set", "show_options"})

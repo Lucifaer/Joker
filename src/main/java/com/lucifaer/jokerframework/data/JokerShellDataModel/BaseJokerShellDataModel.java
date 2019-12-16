@@ -16,5 +16,5 @@ public abstract class BaseJokerShellDataModel {
 //  上一个命令节点
     public static Stack<String> preCommandNode = new Stack<>();
 //  用于存储参数
-    public static Map<String, Object> params = new HashMap<>();
+    public static Map<String, String> params = new HashMap<>();
 }
