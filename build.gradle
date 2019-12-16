@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version "2.2.2.RELEASE"
 }
 
 group 'com.lucifaer'
@@ -14,6 +15,7 @@ repositories {
 dependencies {
     compile("org.springframework:spring-context:5.2.0.RELEASE")
     compile("org.springframework:spring-aop:5.2.0.RELEASE")
+    compile("org.springframework.shell:spring-shell-starter:2.0.0.RELEASE")
     compile("org.aspectj:aspectjrt:1.9.4")
     compile("org.aspectj:aspectjweaver:1.9.4")
     compile("info.picocli:picocli:4.0.4")
@@ -23,7 +25,7 @@ dependencies {
 jar {
     manifest {
         attributes "Manifest-Version": 1.0,
-                "Main-Class": "com.lucifaer.jokerframework.core.ParamsParser"
+                "Main-Class": "com.lucifaer.jokerframework.core.shell.JokerShell"
     }
     from {
         sourceSets.main.runtimeClasspath

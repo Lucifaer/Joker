@@ -6,9 +6,9 @@ import org.junit.Test;
 public class JmxInstallTest {
     @Test
     public void testExec() throws Exception {
-        ExploitModeTest exploitModeTest = new ExploitModeTest();
-        exploitModeTest.testInitPayload();
-        JmxCommand jmxCommand = new JmxCommand();
-        jmxCommand.exec();
+//        ExploitModeTest exploitModeTest = new ExploitModeTest();
+//        exploitModeTest.testInitPayload();
+//        JmxCommand jmxCommand = new JmxCommand();
+//        jmxCommand.exec();
     }
 }
