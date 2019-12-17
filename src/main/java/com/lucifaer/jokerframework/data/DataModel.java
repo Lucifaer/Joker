@@ -13,18 +13,18 @@ public abstract class DataModel {
         jokerContext = new HashMap<>();
     }
 
-    String paramConfirm(Map<String, String> map, String key) {
-        if (map.get(key).isEmpty()) {
-            printErroMsg(this.getClass(), key + " is null");
-        }
-        return map.get(key);
-    }
-
     public static Map<String, Object> getJokerContext() {
         return jokerContext;
     }
 
     public static void setJokerContext(String key, Object value) {
         jokerContext.put(key, value);
+    }
+
+    String paramConfirm(Map<String, String> map, String key) {
+        if (map.get(key).isEmpty()) {
+            printErroMsg(this.getClass(), key + " is null");
+        }
+        return map.get(key);
     }
 }
