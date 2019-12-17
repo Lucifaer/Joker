@@ -16,7 +16,7 @@ import java.util.Map;
 public class JokerConfiguration {
     @Bean(value = "jokerContext")
     public Map<String, Object> jokerContext(ShellDataModel shellDataModel) {
-        DataModel.setJokerContext("shellContext", shellDataModel.getShellContext());
+        DataModel.setJokerContext("shellContext", shellDataModel);
         return DataModel.getJokerContext();
     }
 }

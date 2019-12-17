@@ -12,7 +12,6 @@ import org.springframework.shell.ResultHandler;
 import org.springframework.shell.jline.PromptProvider;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 import static com.lucifaer.jokerframework.utils.Output.echo;
@@ -21,36 +20,34 @@ import static com.lucifaer.jokerframework.utils.Output.echo;
 public class ShellConfiguration implements ResultHandler<ShellResultHandler> {
     @Bean(value = "shellContext")
     public ShellDataModel shellContext() {
-        Map<String, Object> shellContext = new HashMap<>();
-        shellContext.put("defaultAttributedString", "Joker$ ");
-        shellContext.put("currentAttributedString", "");
-        shellContext.put("defaultCommandNode", "root");
-        shellContext.put("currentCommandNode", "");
-        shellContext.put("preCommandNode", new Stack<String>());
-        shellContext.put("params", new HashMap<String, String>());
-        ShellDataModel shellDataModel = new ShellDataModel(shellContext);
-        DataModel.setJokerContext("shellContext", shellDataModel);
+        ShellDataModel shellDataModel = new ShellDataModel();
+        shellDataModel.setDefaultAttributedString("Joker$ ");
+        shellDataModel.setCurrentAttributedString("");
+        shellDataModel.setDefaultCommandNode("root");
+        shellDataModel.setCurrentCommandNode("");
+        shellDataModel.setPreCommandNode(new Stack<>());
+        shellDataModel.setParams(new HashMap<>());
         return shellDataModel;
     }
 
     @Bean
     @Qualifier("shellContext")
     public PromptProvider jokerPromptProvider(ShellDataModel shellDataModel) {
-        if (shellDataModel.getShellContextValue("currentAttributedString").toString().isEmpty()) {
-            shellDataModel.setShellContextValue("currentAttributedString", shellDataModel.getShellContextValue("defaultAttributedString"));
+        if (shellDataModel.getCurrentAttributedString().isEmpty()) {
+            shellDataModel.setCurrentAttributedString(shellDataModel.getDefaultAttributedString());
         }
 
-        if (shellDataModel.getShellContextValue("currentCommandNode").toString().isEmpty()) {
-            shellDataModel.setShellContextValue("currentCommandNode", shellDataModel.getShellContextValue("defaultCommandNode"));
+        if (shellDataModel.getCurrentCommandNode().isEmpty()) {
+            shellDataModel.setCurrentCommandNode(shellDataModel.getDefaultCommandNode());
         }
-        return () -> new AttributedString((CharSequence) shellDataModel.getShellContextValue("currentAttributedString"), AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
+        return () -> new AttributedString(shellDataModel.getCurrentAttributedString(), AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
     }
 
     @Override
     public void handleResult(ShellResultHandler result) {
-        String defaultAttributedString = (String) shellContext().getShellContextValue("defaultAttributedString");
+        String defaultAttributedString = shellContext().getDefaultAttributedString();
         if ("use".equals(result.getCurrentCommand())) {
-            shellContext().getShellContext().replace("currentAttributedString", String.format("(%s)", result.getValue()) + defaultAttributedString);
+            shellContext().setCurrentAttributedString(String.format("(%s)", result.getValue()) + defaultAttributedString);
         }
 
         if ("set".equals(result.getCurrentCommand())) {

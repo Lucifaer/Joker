@@ -15,7 +15,7 @@ public class HelpApp implements Help.Command {
     @ShellMethod(value = "show jokerOption helps", key = "help", group = "Joker")
     public void help(@ShellOption(defaultValue = " ") String jokerOption) {
         String[] help = {};
-        String currentCommandNode = (String) shellDataModel.getShellContextValue("currentCommandNode");
+        String currentCommandNode = shellDataModel.getCurrentCommandNode();
         switch (jokerOption) {
             case "use":
                 help = new String[]{

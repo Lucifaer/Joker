@@ -3,27 +3,61 @@ package com.lucifaer.jokerframework.data.core;
 import com.lucifaer.jokerframework.data.DataModel;
 
 import java.util.Map;
+import java.util.Stack;
 
 public class ShellDataModel extends DataModel {
-    private Map<String, Object> shellContext;
+    private String defaultAttributedString;
+    private String currentAttributedString;
+    private String defaultCommandNode;
+    private String currentCommandNode;
+    private Stack<String> preCommandNode;
+    private Map<String, String> params;
 
-    public ShellDataModel(Map<String, Object> shellContext) {
-        this.shellContext = shellContext;
+    public String getDefaultAttributedString() {
+        return defaultAttributedString;
     }
 
-    public Map<String, Object> getShellContext() {
-        return shellContext;
+    public void setDefaultAttributedString(String defaultAttributedString) {
+        this.defaultAttributedString = defaultAttributedString;
     }
 
-    public Object getShellContextValue(String key) {
-        return this.shellContext.get(key);
+    public String getCurrentAttributedString() {
+        return currentAttributedString;
     }
 
-    public void setShellContext(Map<String, Object> shellContext) {
-        this.shellContext = shellContext;
+    public void setCurrentAttributedString(String currentAttributedString) {
+        this.currentAttributedString = currentAttributedString;
     }
 
-    public void setShellContextValue(String key, Object value) {
-        this.shellContext.replace(key, value);
+    public String getDefaultCommandNode() {
+        return defaultCommandNode;
+    }
+
+    public void setDefaultCommandNode(String defaultCommandNode) {
+        this.defaultCommandNode = defaultCommandNode;
+    }
+
+    public String getCurrentCommandNode() {
+        return currentCommandNode;
+    }
+
+    public void setCurrentCommandNode(String currentCommandNode) {
+        this.currentCommandNode = currentCommandNode;
+    }
+
+    public Stack<String> getPreCommandNode() {
+        return preCommandNode;
+    }
+
+    public void setPreCommandNode(Stack<String> preCommandNode) {
+        this.preCommandNode = preCommandNode;
+    }
+
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
     }
 }
