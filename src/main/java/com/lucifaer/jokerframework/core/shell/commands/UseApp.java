@@ -14,6 +14,10 @@ import static com.lucifaer.jokerframework.utils.Output.echo;
 public class UseApp {
     @Autowired
     private ShellDataModel shellDataModel;
+
+    @Autowired
+    private ShowApp showApp;
+
     private boolean used = false;
 
     @ShellMethod(value = "use exploit Model", key = "use", group = "Joker")
@@ -43,53 +47,30 @@ public class UseApp {
         String currentCommandNode = shellDataModel.getCurrentCommandNode();
         Stack preCommandNode = shellDataModel.getPreCommandNode();
         if ("exploit".equals(currentCommandNode)) {
-            for (String s : defaultExploitConfigurations()) {
+            for (String s : showApp.defaultExploitConfigurations()) {
                 echo(s);
             }
         }
         else if ("payload".equals(currentCommandNode)) {
-            for (String s : defaultExploitConfigurations()) {
+            for (String s : showApp.defaultExploitConfigurations()) {
                 echo(s);
             }
 
-            for (String s : defaultPayloadConfigurations()) {
+            for (String s : showApp.defaultPayloadConfigurations()) {
                 echo(s);
             }
         }
         else if ("set".equals(currentCommandNode) && ("set".equals(preCommandNode.peek()) || "payload".equals(preCommandNode.peek()))) {
-            for (String s : defaultExploitConfigurations()) {
+            for (String s : showApp.defaultExploitConfigurations()) {
                 echo(s);
             }
 
-            for (String s : defaultPayloadConfigurations()) {
+            for (String s : showApp.defaultPayloadConfigurations()) {
                 echo(s);
             }
         }
         else {
             echo("you should set payload first");
         }
-    }
-
-    private String[] defaultExploitConfigurations() {
-        return new String[] {
-                "Exploit configurations: ",
-                "   [payloadName]               " + shellDataModel.getParams().get("payloadName") + "\t\twhich payload do you wanna set. eg: command",
-                "   [targetUrl]                 " + shellDataModel.getParams().get("targetUrl") + "\t\ttarget url. eg: 127.0.0.1:23333",
-        };
-    }
-
-    private String[] defaultPayloadConfigurations() {
-        return new String[] {
-                "Payload configurations: ",
-                "   [command]                   " + shellDataModel.getParams().get("command") +"\t\twhat command do you wanna execute. eg: whoami",
-        };
-    }
-
-    private String[] defaultServerConfigurations() {
-        return new String[] {
-                "Server configurations: ",
-                "   [url]                       server's url. eg: http://127.0.0.1:9999. default: 0.0.0.0",
-                "   [port]                      server's port. eg: 9999. default: 9999",
-        };
     }
 }

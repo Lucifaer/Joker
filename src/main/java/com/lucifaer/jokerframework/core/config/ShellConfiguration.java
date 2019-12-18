@@ -1,5 +1,6 @@
 package com.lucifaer.jokerframework.core.config;
 
+import com.lucifaer.jokerframework.core.shell.commands.ShowApp;
 import com.lucifaer.jokerframework.data.DataModel;
 import com.lucifaer.jokerframework.data.core.ShellDataModel;
 import com.lucifaer.jokerframework.utils.ShellResultHandler;
@@ -41,6 +42,11 @@ public class ShellConfiguration implements ResultHandler<ShellResultHandler> {
             shellDataModel.setCurrentCommandNode(shellDataModel.getDefaultCommandNode());
         }
         return () -> new AttributedString(shellDataModel.getCurrentAttributedString(), AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
+    }
+
+    @Bean
+    public ShowApp showOptions() {
+        return new ShowApp();
     }
 
     @Override
