@@ -1,0 +1,9 @@
+${AnsiColor.BRIGHT_RED}
+       __      __
+      / /___  / /_____  _____
+ __  / / __ \/ //_/ _ \/ ___/
+${AnsiColor.BRIGHT_YELLOW}/ /_/ / /_/ / ,< /  __/ /
+\____/\____/_/|_|\___/_/
+
+${AnsiColor.BRIGHT_GREEN}
+Author:${AnsiColor.CYAN} Lucifaer

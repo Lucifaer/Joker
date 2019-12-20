@@ -17,6 +17,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-test:1.5.8.RELEASE")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile("com.github.stefanbirkner:system-rules:1.19.0")
 }
 
 jar {
