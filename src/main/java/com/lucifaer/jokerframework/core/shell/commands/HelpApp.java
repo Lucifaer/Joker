@@ -17,6 +17,7 @@ public class HelpApp implements Help.Command {
         String[] help = {};
         String currentCommandNode = shellDataModel.getCurrentCommandNode();
         switch (jokerOption) {
+            case "server":
             case "use":
                 help = new String[]{
                         "use: ",
@@ -25,7 +26,7 @@ public class HelpApp implements Help.Command {
                 };
                 break;
             default:
-                if (currentCommandNode.equals("exploit") || currentCommandNode.equals("payload") || currentCommandNode.equals("set")) {
+                if (currentCommandNode.equals("exploit") || currentCommandNode.equals("payload") || currentCommandNode.equals("set") || currentCommandNode.equals("server")) {
                     help = new String[]{
                             "show_options: ",
                             "   show exploit configurations",
@@ -36,7 +37,9 @@ public class HelpApp implements Help.Command {
                 else {
                     help = new String[]{
                             "use: ",
-                            "   [exploit_name]          which exploit you wanna use. eg: JmxExploit",
+                            "   [exploit_name]          which exploit you wanna use. eg: jmx",
+                            "server: ",
+                            "   [service_name]          which service you wanna use. eg: http",
                             "clear: ",
                             "   Clear the shell screen.",
                             "exit, quit: ",

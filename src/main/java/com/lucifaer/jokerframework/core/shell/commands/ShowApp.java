@@ -18,15 +18,15 @@ public class ShowApp {
     String[] defaultPayloadConfigurations() {
         return new String[] {
                 "Payload configurations: ",
-                "   [command]                   " + shellContext.getParams().get("command") +"\t\twhat command do you wanna execute. eg: whoami",
+                "   [command]                   " + shellContext.getParams().get("command") + "\t\twhat command do you wanna execute. eg: whoami",
         };
     }
 
     String[] defaultServerConfigurations() {
         return new String[] {
                 "Server configurations: ",
-                "   [url]                       server's url. eg: http://127.0.0.1:9999. default: 0.0.0.0",
-                "   [port]                      server's port. eg: 9999. default: 9999",
+                "   [serverUrl]                       " + shellContext.getParams().get("serverUrl") + "\t\tserver's url. eg: http://127.0.0.1. default: http://0.0.0.0",
+                "   [serverPort]                      " + shellContext.getParams().get("serverPort") +"\t\tserver's port. eg: 9999. default: 9999",
         };
     }
 }

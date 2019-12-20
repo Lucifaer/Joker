@@ -6,23 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
-import java.util.Stack;
-
-import static com.lucifaer.jokerframework.utils.Output.echo;
-
 @ShellComponent
-public class UseApp {
+public class ServerApp {
     @Autowired
     private ShellDataModel shellDataModel;
 
-    private boolean used = false;
-
-    @ShellMethod(value = "use exploit Model", key = "use", group = "Joker")
-    public ShellResultHandler doUse(String exploitName) {
-        shellDataModel.getParams().put("exploitName", exploitName);
+    @ShellMethod(value = "run exploit server", key = "server", group = "Joker")
+    public ShellResultHandler doServer(String serverName) {
+        shellDataModel.getParams().put("serverName", serverName);
         shellDataModel.getPreCommandNode().push(shellDataModel.getCurrentCommandNode());
-        shellDataModel.setCurrentCommandNode("exploit");
-        used = true;
-        return new ShellResultHandler(exploitName, "use");
+        shellDataModel.setCurrentCommandNode("server");
+        return new ShellResultHandler(serverName, "server");
     }
 }

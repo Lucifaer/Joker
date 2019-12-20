@@ -52,7 +52,7 @@ public class ShellConfiguration implements ResultHandler<ShellResultHandler> {
     @Override
     public void handleResult(ShellResultHandler result) {
         String defaultAttributedString = shellContext().getDefaultAttributedString();
-        if ("use".equals(result.getCurrentCommand())) {
+        if ("use".equals(result.getCurrentCommand()) || "server".equals(result.getCurrentCommand())) {
             shellContext().setCurrentAttributedString(String.format("(%s)", result.getValue()) + defaultAttributedString);
         }
 
