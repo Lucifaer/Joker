@@ -26,7 +26,7 @@ public class CommonApp {
             case "payloadName":
                 shellContext.setCurrentCommandNode("payload");
                 break;
-            case "server":
+            case "serverName":
                 shellContext.setCurrentCommandNode("server");
                 break;
             default:

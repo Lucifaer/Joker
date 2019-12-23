@@ -3,7 +3,11 @@ package com.lucifaer.jokerframework.server.http;
 import com.lucifaer.jokerframework.server.Server;
 
 
-public class JmxHttpServer {
+public class JmxHttpServer implements Server {
+    @Override
+    public void createServer() {
+
+    }
 
 //    private final Logger logger = LoggerFactory.getLogger(getClass());
 //    @Async

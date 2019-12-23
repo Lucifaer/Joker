@@ -25,6 +25,8 @@ public class ShowApp {
     String[] defaultServerConfigurations() {
         return new String[] {
                 "Server configurations: ",
+                "   [serverType]                      " + shellContext.getParams().get("serverType") + "\t\tserver's type. eg: http",
+                "   [serverName]                      " + shellContext.getParams().get("serverName") + "\t\tserver's name. eg: jmx",
                 "   [serverUrl]                       " + shellContext.getParams().get("serverUrl") + "\t\tserver's url. eg: http://127.0.0.1. default: http://0.0.0.0",
                 "   [serverPort]                      " + shellContext.getParams().get("serverPort") +"\t\tserver's port. eg: 9999. default: 9999",
         };
