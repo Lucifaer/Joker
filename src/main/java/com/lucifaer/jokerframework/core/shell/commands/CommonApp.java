@@ -18,6 +18,7 @@ public class CommonApp {
     @Autowired
     private ShowApp showApp;
 
+//  FIXME: 这里基于模版所设置的参数是有问题的，当server设置完后再次show的话会切换到exploit设置的参数展示上，同时在exploit参数设置完后再次利用use切换也会出现模版参数显示错误的问题
     @ShellMethod(value = "set options", key = "set", group = "Joker")
     public ShellResultHandler doSet(String config, String value) {
         shellContext.getParams().put(config, value);

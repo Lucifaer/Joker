@@ -12,10 +12,10 @@ public class ServerApp {
     private ShellDataModel shellDataModel;
 
     @ShellMethod(value = "run exploit server", key = "server", group = "Joker")
-    public ShellResultHandler doServer(String serverName) {
-        shellDataModel.getParams().put("serverName", serverName);
+    public ShellResultHandler doServer(String serverType) {
+        shellDataModel.getParams().put("serverType", serverType);
         shellDataModel.getPreCommandNode().push(shellDataModel.getCurrentCommandNode());
         shellDataModel.setCurrentCommandNode("server");
-        return new ShellResultHandler(serverName, "server");
+        return new ShellResultHandler(serverType, "server");
     }
 }
