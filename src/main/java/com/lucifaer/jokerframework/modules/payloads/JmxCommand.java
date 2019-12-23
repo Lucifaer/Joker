@@ -2,15 +2,17 @@ package com.lucifaer.jokerframework.modules.payloads;
 
 import com.lucifaer.jokerframework.modules.Payload;
 
+import java.util.Map;
+
 public class JmxCommand implements Payload {
-    private String test;
+    private Map<String, String> params;
     @Override
     public void exec() {
-        System.out.println(this.test);
+        System.out.println(this.params.get("command"));
     }
 
     @Override
     public void init(Object object) {
-        this.test = (String) object;
+        this.params = (Map<String, String>) object;
     }
 }
