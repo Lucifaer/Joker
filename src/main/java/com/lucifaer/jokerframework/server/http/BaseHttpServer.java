@@ -14,11 +14,11 @@ public abstract class BaseHttpServer implements Server {
     protected HttpServer server = null;
 
     void init() {
-        if (serverUrl.isEmpty()) {
+        if (serverUrl == null || serverUrl.isEmpty()) {
             this.serverUrl = "http://0.0.0.0";
         }
 
-        if (serverPort.isEmpty()) {
+        if (serverPort == null || serverPort.isEmpty()) {
             this.serverPort = "9999";
         }
     }
@@ -29,14 +29,13 @@ public abstract class BaseHttpServer implements Server {
             server.createContext("/", handler);
             server.setExecutor(null);
             server.start();
-            Thread.sleep(10000);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void stopServer() {
-        server.stop(-1);
+        server.stop(2);
     }
 
     public HttpHandler getHandler() {
@@ -47,7 +46,7 @@ public abstract class BaseHttpServer implements Server {
         this.handler = handler;
     }
 
-    String getServerUrl() {
+    public String getServerUrl() {
         return serverUrl;
     }
 
@@ -55,7 +54,7 @@ public abstract class BaseHttpServer implements Server {
         this.serverUrl = serverUrl;
     }
 
-    String getServerPort() {
+    public String getServerPort() {
         return serverPort;
     }
 

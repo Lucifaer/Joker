@@ -7,6 +7,9 @@ public interface Server {
     @Async
     void createServer();
 
-    @Async
-    void run();
+    void stopServer();
+
+    String getServerUrl();
+
+    String getServerPort();
 }

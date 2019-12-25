@@ -36,6 +36,7 @@ public class CommonApp {
         return new ShellResultHandler(config, value, "set");
     }
 
+//  TODO: 还未加入动态展示server参数设置的功能，后续版本加上
     @ShellMethod(value = "show configurations", key = "show_options", group = "Joker")
     public void show() {
         String currentCommandNode = shellContext.getCurrentCommandNode();

@@ -13,7 +13,7 @@ import org.springframework.shell.jline.PromptProvider;
 import java.util.Map;
 
 @Configurable
-@Import(ShellConfiguration.class)
+@Import({ShellConfiguration.class, ExploitConfiguration.class, ServerConfiguration.class})
 public class JokerConfiguration {
     @Bean(value = "jokerContext")
     public Map<String, Object> jokerContext(ShellDataModel shellDataModel) {
