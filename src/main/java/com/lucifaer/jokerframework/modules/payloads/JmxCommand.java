@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class JmxCommand implements Payload {
     private Map<String, String> params;
+
     @Override
     public void exec() {
         System.out.println(this.params.get("command"));

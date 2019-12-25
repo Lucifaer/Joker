@@ -8,7 +8,7 @@ import org.springframework.shell.standard.ShellMethod;
 
 import java.util.Stack;
 
-import static com.lucifaer.jokerframework.utils.Output.echo;
+import static com.lucifaer.jokerframework.utils.commons.Output.echo;
 
 @ShellComponent
 public class CommonApp {

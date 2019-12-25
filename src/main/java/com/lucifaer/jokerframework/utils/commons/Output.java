@@ -1,4 +1,4 @@
-package com.lucifaer.jokerframework.utils;
+package com.lucifaer.jokerframework.utils.commons;
 
 public class Output {
     public static void echo(String msg) {

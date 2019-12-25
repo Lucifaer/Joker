@@ -1,4 +1,4 @@
-package com.lucifaer.jokerframework.utils;
+package com.lucifaer.jokerframework.utils.commons;
 
 public class ErrorHandler {
     public static void printErroMsg(Class<?> errorClass, String msg) {

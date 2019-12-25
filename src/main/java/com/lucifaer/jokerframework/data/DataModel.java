@@ -3,7 +3,7 @@ package com.lucifaer.jokerframework.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.lucifaer.jokerframework.utils.ErrorHandler.printErroMsg;
+import static com.lucifaer.jokerframework.utils.commons.ErrorHandler.printErroMsg;
 
 public abstract class DataModel {
 //    框架上下文

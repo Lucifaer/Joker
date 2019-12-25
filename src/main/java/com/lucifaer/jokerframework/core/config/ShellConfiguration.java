@@ -1,7 +1,6 @@
 package com.lucifaer.jokerframework.core.config;
 
 import com.lucifaer.jokerframework.core.shell.commands.ShowApp;
-import com.lucifaer.jokerframework.data.DataModel;
 import com.lucifaer.jokerframework.data.core.ShellDataModel;
 import com.lucifaer.jokerframework.utils.ShellResultHandler;
 import org.jline.utils.AttributedString;
@@ -15,7 +14,7 @@ import org.springframework.shell.jline.PromptProvider;
 import java.util.HashMap;
 import java.util.Stack;
 
-import static com.lucifaer.jokerframework.utils.Output.echo;
+import static com.lucifaer.jokerframework.utils.commons.Output.echo;
 
 @Configuration
 public class ShellConfiguration implements ResultHandler<ShellResultHandler> {

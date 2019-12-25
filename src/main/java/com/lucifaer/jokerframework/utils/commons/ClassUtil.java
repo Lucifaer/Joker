@@ -1,4 +1,4 @@
-package com.lucifaer.jokerframework.utils;
+package com.lucifaer.jokerframework.utils.commons;
 
 import java.io.File;
 import java.io.IOException;

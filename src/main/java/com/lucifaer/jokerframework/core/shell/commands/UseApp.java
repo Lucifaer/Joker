@@ -6,10 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
-import java.util.Stack;
-
-import static com.lucifaer.jokerframework.utils.Output.echo;
-
 @ShellComponent
 public class UseApp {
     @Autowired
