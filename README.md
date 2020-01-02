@@ -16,13 +16,13 @@
 
 在项目根目录直接运行：
 
-```shell script
+```
 ./gradlew build
 ```
 
 如果遇到测试不通过的情况可以执行以下命令跳过测试：
 
-```shell script
+```
 ./gradlew build -x test
 ```
 
@@ -30,7 +30,7 @@
 
 ### 2.2 默认server配置文件
 
-```shell script
+```
 cp -r ./server ./build/libs/
 ```
 
@@ -38,7 +38,7 @@ cp -r ./server ./build/libs/
 
 ### 2.3 运行
 
-```shell script
+```
 java -jar ./build/libs/JokerFrameWork-1.0-SNAPSHOT.jar
 ```
 
@@ -56,7 +56,7 @@ java -jar ./build/libs/JokerFrameWork-1.0-SNAPSHOT.jar
 
 命令行运行：
 
-```shell script
+```
 java -jar -Dcom.sun.management.jmxremote.port=23333 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=127.0.0.1 jmx-server.jar
 ```
 
