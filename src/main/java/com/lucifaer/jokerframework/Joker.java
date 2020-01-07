@@ -1,4 +1,4 @@
-package com.lucifaer.jokerframework.core.shell;
+package com.lucifaer.jokerframework;
 
 import com.lucifaer.jokerframework.core.config.JokerConfiguration;
 import org.springframework.boot.SpringApplication;
