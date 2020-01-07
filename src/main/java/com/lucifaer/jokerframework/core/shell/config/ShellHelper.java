@@ -4,7 +4,9 @@ import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ShellHelper {
     @Value("${shell.out.info}")
     public String infoColor;
@@ -12,11 +14,14 @@ public class ShellHelper {
     @Value("${shell.out.success}")
     public String successColor;
 
-    @Value("{shell.out.warning}")
+    @Value("${shell.out.warning}")
     public String warningColor;
 
-    @Value("{shell.out.error}")
+    @Value("${shell.out.error}")
     public String errorColor;
+
+    @Value("${shell.out.document}")
+    public String documentColor;
 
     private Terminal terminal;
 
@@ -42,5 +47,39 @@ public class ShellHelper {
 
     public String getErrorMessage(String message) {
         return getColored(message, PromptColor.valueOf(errorColor));
+    }
+
+
+    public void echo(String message) {
+        echo(message, null);
+    }
+
+    private void echo(String message, PromptColor color) {
+        String toEcho = message;
+        if (color != null) {
+            toEcho = getColored(message, color);
+        }
+        terminal.writer().println(toEcho);
+        terminal.flush();
+    }
+
+    public void echoSuccess(String message) {
+        echo("[SUCCESS] " + message, PromptColor.valueOf(successColor));
+    }
+
+    public void echoInfo(String message) {
+        echo("[INFO] " + message, PromptColor.valueOf(infoColor));
+    }
+
+    public void echoWarning(String message) {
+        echo("[WARANING] " + message, PromptColor.valueOf(warningColor));
+    }
+
+    public void echoError(String message) {
+        echo("[ERROR] " + message, PromptColor.valueOf(errorColor));
+    }
+
+    public void echoDocument(String message) {
+        echo(message, PromptColor.valueOf(documentColor));
     }
 }
