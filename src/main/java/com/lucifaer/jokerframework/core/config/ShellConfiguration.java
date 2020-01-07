@@ -1,5 +1,6 @@
 package com.lucifaer.jokerframework.core.config;
 
+import com.lucifaer.jokerframework.core.shell.config.DefaultDocumentation;
 import com.lucifaer.jokerframework.core.shell.config.ShellHelper;
 import com.lucifaer.jokerframework.data.ShellContext;
 import org.jline.terminal.Terminal;
@@ -19,5 +20,10 @@ public class ShellConfiguration {
     @Bean
     public ShellHelper shellHelper(@Lazy Terminal terminal) {
         return new ShellHelper(terminal);
+    }
+
+    @Bean
+    public DefaultDocumentation defaultDocumentation() {
+        return new DefaultDocumentation();
     }
 }

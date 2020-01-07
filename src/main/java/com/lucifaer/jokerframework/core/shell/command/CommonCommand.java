@@ -1,5 +1,7 @@
 package com.lucifaer.jokerframework.core.shell.command;
 
+import com.lucifaer.jokerframework.core.shell.config.JokerCommandManager;
+import com.lucifaer.jokerframework.core.shell.config.JokerShellProvider;
 import com.lucifaer.jokerframework.core.shell.config.ShellHelper;
 import com.lucifaer.jokerframework.data.JokerContext;
 import com.lucifaer.jokerframework.data.ShellContext;
@@ -7,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-
-import java.util.ArrayList;
+import org.springframework.shell.standard.ShellMethodAvailability;
+import org.springframework.shell.standard.ShellOption;
 
 @ShellComponent
 @Lazy
-public class CommonCommand {
+public class CommonCommand extends JokerCommandManager {
     @Autowired
     JokerContext jokerContext;
     @Autowired
@@ -21,7 +23,8 @@ public class CommonCommand {
     private ShellContext shellContext;
 
     @ShellMethod(value = "set exploit options", key = "set", group = "Joker")
-    public String doSet(String config, String value) {
+    @ShellMethodAvailability("isUsed")
+    public String doSet(@ShellOption(valueProvider = JokerShellProvider.class) String config, String value) {
         this.shellContext = jokerContext.getCurrentShellContext();
         shellContext.getParams().put(config, value);
         if ("payloadName".equals(config)) {
@@ -31,28 +34,6 @@ public class CommonCommand {
             stackHandler("set");
         }
         return shellHelper.getSuccessMessage(String.format("set %s with %s", config, value));
-    }
-
-    @ShellMethod(value = "show configurations", key = "show_options", group = "Joker")
-    public void doShow() {
-        this.shellContext = jokerContext.getCurrentShellContext();
-        ArrayList<String> result = new ArrayList<String>();
-        if (shellContext.commandNode.isEmpty()) {
-            result.add("use options");
-        }
-        else {
-            for (String node : shellContext.commandNode) {
-                if ("use".equals(node)) {
-                    result.add("use options");
-                }
-                else if ("payload".equals(node)) {
-                    result.add("payload options");
-                }
-            }
-        }
-        for (String option : result) {
-            System.out.println(shellHelper.getInfoMessage(option));
-        }
     }
 
     private void stackHandler(String node) {
