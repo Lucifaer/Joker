@@ -1,62 +1,29 @@
 package com.lucifaer.jokerframework.core.config;
 
-import com.lucifaer.jokerframework.core.shell.commands.ShowApp;
-import com.lucifaer.jokerframework.data.core.ShellDataModel;
-import com.lucifaer.jokerframework.utils.ShellResultHandler;
-import org.jline.utils.AttributedString;
-import org.jline.utils.AttributedStyle;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.lucifaer.jokerframework.core.shell.config.DefaultDocumentation;
+import com.lucifaer.jokerframework.core.shell.config.ShellHelper;
+import com.lucifaer.jokerframework.data.ShellContext;
+import org.jline.terminal.Terminal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.shell.ResultHandler;
-import org.springframework.shell.jline.PromptProvider;
-
-import java.util.HashMap;
-import java.util.Stack;
-
-import static com.lucifaer.jokerframework.utils.commons.Output.echo;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 
 @Configuration
-public class ShellConfiguration implements ResultHandler<ShellResultHandler> {
-    @Bean(value = "shellContext")
-    public ShellDataModel shellContext() {
-        ShellDataModel shellDataModel = new ShellDataModel();
-        shellDataModel.setDefaultAttributedString("Joker$ ");
-        shellDataModel.setCurrentAttributedString("");
-        shellDataModel.setDefaultCommandNode("root");
-        shellDataModel.setCurrentCommandNode("");
-        shellDataModel.setPreCommandNode(new Stack<>());
-        shellDataModel.setParams(new HashMap<>());
-        return shellDataModel;
+public class ShellConfiguration {
+    @Bean
+    @Scope("prototype")
+    public ShellContext shellContext() {
+        return new ShellContext();
     }
 
     @Bean
-    @Qualifier("shellContext")
-    public PromptProvider jokerPromptProvider(ShellDataModel shellDataModel) {
-        if (shellDataModel.getCurrentAttributedString().isEmpty()) {
-            shellDataModel.setCurrentAttributedString(shellDataModel.getDefaultAttributedString());
-        }
-
-        if (shellDataModel.getCurrentCommandNode().isEmpty()) {
-            shellDataModel.setCurrentCommandNode(shellDataModel.getDefaultCommandNode());
-        }
-        return () -> new AttributedString(shellDataModel.getCurrentAttributedString(), AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
+    public ShellHelper shellHelper(@Lazy Terminal terminal) {
+        return new ShellHelper(terminal);
     }
 
     @Bean
-    public ShowApp showOptions() {
-        return new ShowApp();
-    }
-
-    @Override
-    public void handleResult(ShellResultHandler result) {
-        String defaultAttributedString = shellContext().getDefaultAttributedString();
-        if ("use".equals(result.getCurrentCommand()) || "server".equals(result.getCurrentCommand())) {
-            shellContext().setCurrentAttributedString(String.format("(%s)", result.getValue()) + defaultAttributedString);
-        }
-
-        if ("set".equals(result.getCurrentCommand())) {
-            echo(String.format("set %s: %s", result.getOption(), result.getValue()));
-        }
+    public DefaultDocumentation defaultDocumentation() {
+        return new DefaultDocumentation();
     }
 }
