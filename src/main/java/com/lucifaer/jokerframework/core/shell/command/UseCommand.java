@@ -44,7 +44,7 @@ public class UseCommand extends JokerCommandManager {
 
         shellContext.setParams(params);
         jokerContext.shellRegister(shellContext);
-        return shellHelper.getSuccessMessage(String.format("Hello %s", exploitName));
+        return shellHelper.getSuccessMessage(String.format("Use %s", exploitName));
     }
 
     @ShellMethod(value = "run exploit", key = "exploit", group = "Joker")

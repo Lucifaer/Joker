@@ -22,7 +22,9 @@ public class HelpCommand implements Help.Command {
         String currentCommandNode = null;
         try {
             currentCommandNode = jokerContext.getCurrentShellContext().commandNode.peek();
-        }catch (NullPointerException e) {}
+        }catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
         switch (jokerOption) {
             case "use":
@@ -30,6 +32,13 @@ public class HelpCommand implements Help.Command {
                         "use: ",
                         "   show_options            show exploit configurations",
                         "   set [configuration]     set exploit configuration's value",
+                        "   exploit                 run exploit",
+                };
+                break;
+            case "list":
+                help = new String[]{
+                        "list: ",
+                        "   [type]                  witch type mods do you wanna list, eg: exploit",
                 };
                 break;
             default:
@@ -38,13 +47,16 @@ public class HelpCommand implements Help.Command {
                             "show_options: ",
                             "   show exploit configurations",
                             "set: ",
-                            "   [configuration]     set exploit configuration's value"
+                            "   [configuration]     set exploit configuration's value",
+                            "   exploit                 run exploit",
                     };
                 }
                 else {
                     help = new String[]{
                             "use: ",
                             "   [exploit_name]          which exploit you wanna use. eg: jmx",
+                            "list: ",
+                            "   [type]                  list type mod. eg: exploit mod or server mod",
                             "clear: ",
                             "   Clear the shell screen.",
                             "exit, quit: ",

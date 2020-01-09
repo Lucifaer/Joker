@@ -36,6 +36,17 @@ public class CommonCommand extends JokerCommandManager {
         return shellHelper.getSuccessMessage(String.format("set %s with %s", config, value));
     }
 
+    @ShellMethod(value = "list exist type mod", key = "list", group = "Joker")
+    public void doList(String type) {
+        if ("exploit".equals(type)) {
+            for (String existExploitName : jokerContext.getExistExploitMap().keySet()) {
+                shellHelper.echoDocument(existExploitName);
+            }
+        }
+        else if ("server".equals(type)) {
+        }
+    }
+
     private void stackHandler(String node) {
         if (!shellContext.commandNode.peek().equals(node)) {
             shellContext.commandNode.push(node);
