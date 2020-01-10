@@ -1,6 +1,6 @@
 package com.lucifaer.jokerframework.core.shell.command;
 
-import com.lucifaer.jokerframework.core.shell.config.ShellHelper;
+import com.lucifaer.jokerframework.core.shell.config.JokerShellHelper;
 import com.lucifaer.jokerframework.data.JokerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
@@ -14,7 +14,7 @@ public class HelpCommand implements Help.Command {
     JokerContext jokerContext;
 
     @Autowired
-    ShellHelper shellHelper;
+    JokerShellHelper jokerShellHelper;
 
     @ShellMethod(value = "show jokerOption helps", key = "help", group = "Joker")
     public void help(@ShellOption(defaultValue = " ") String jokerOption) {
@@ -70,7 +70,7 @@ public class HelpCommand implements Help.Command {
         }
 
         for (String h : help) {
-            shellHelper.echoDocument(h);
+            jokerShellHelper.echoDocument(h);
         }
     }
 }

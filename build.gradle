@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version "2.2.2.RELEASE"
-//    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
+apply plugin: 'io.spring.dependency-management'
 
 group 'com.lucifaer'
 version '1.0-SNAPSHOT'
@@ -21,15 +21,10 @@ dependencies {
     testCompile("com.github.stefanbirkner:system-rules:1.19.0")
 }
 
-jar {
-    manifest {
-        attributes "Manifest-Version": 1.0,
-                "Main-Class": "com.lucifaer.jokerframework.Joker"
-    }
-    from {
-        sourceSets.main.runtimeClasspath
-                .filter { (it.isDirectory() && it.listFiles().length > 0) || it.isFile() }
-                .collect { it.isDirectory() ? it : zipTree(it) }
-
-    }
+springBoot {
+    mainClassName = "com.lucifaer.jokerframework.Joker"
 }
+
+//bootRun {
+//    standardInput = System.in
+//}

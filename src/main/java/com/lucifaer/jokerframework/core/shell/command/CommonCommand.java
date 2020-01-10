@@ -2,7 +2,7 @@ package com.lucifaer.jokerframework.core.shell.command;
 
 import com.lucifaer.jokerframework.core.shell.config.JokerCommandManager;
 import com.lucifaer.jokerframework.core.shell.config.JokerShellProvider;
-import com.lucifaer.jokerframework.core.shell.config.ShellHelper;
+import com.lucifaer.jokerframework.core.shell.config.JokerShellHelper;
 import com.lucifaer.jokerframework.data.JokerContext;
 import com.lucifaer.jokerframework.data.ShellContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class CommonCommand extends JokerCommandManager {
     @Autowired
     JokerContext jokerContext;
     @Autowired
-    ShellHelper shellHelper;
+    JokerShellHelper jokerShellHelper;
 
     private ShellContext shellContext;
 
@@ -33,17 +33,20 @@ public class CommonCommand extends JokerCommandManager {
         else {
             stackHandler("set");
         }
-        return shellHelper.getSuccessMessage(String.format("set %s with %s", config, value));
+        return jokerShellHelper.getSuccessMessage(String.format("set %s with %s", config, value));
     }
 
     @ShellMethod(value = "list exist type mod", key = "list", group = "Joker")
     public void doList(String type) {
         if ("exploit".equals(type)) {
             for (String existExploitName : jokerContext.getExistExploitMap().keySet()) {
-                shellHelper.echoDocument(existExploitName);
+                jokerShellHelper.echoDocument(existExploitName);
             }
         }
         else if ("server".equals(type)) {
+            for (String existServerName : jokerContext.getExistServerMap().keySet()) {
+                jokerShellHelper.echoDocument(existServerName);
+            }
         }
     }
 

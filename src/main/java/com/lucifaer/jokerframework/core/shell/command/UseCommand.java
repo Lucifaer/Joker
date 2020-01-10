@@ -2,7 +2,7 @@ package com.lucifaer.jokerframework.core.shell.command;
 
 import com.lucifaer.jokerframework.core.factory.ExploitFactory;
 import com.lucifaer.jokerframework.core.shell.config.JokerCommandManager;
-import com.lucifaer.jokerframework.core.shell.config.ShellHelper;
+import com.lucifaer.jokerframework.core.shell.config.JokerShellHelper;
 import com.lucifaer.jokerframework.data.CommandManagerContext;
 import com.lucifaer.jokerframework.data.JokerContext;
 import com.lucifaer.jokerframework.data.ShellContext;
@@ -22,7 +22,7 @@ public class UseCommand extends JokerCommandManager {
     JokerContext jokerContext;
 
     @Autowired
-    ShellHelper shellHelper;
+    JokerShellHelper jokerShellHelper;
 
     @Autowired
     ExploitFactory exploitFactory;
@@ -30,7 +30,7 @@ public class UseCommand extends JokerCommandManager {
     @ShellMethod(value = "use exploit model", key = "use", group = "Joker")
     public String doUse(String exploitName) {
         if (!exploitFactory.exploitMap.containsKey(exploitName)) {
-            return shellHelper.getErrorMessage("Can't find exploit mod named " + exploitName + ". Please use `list command to find exist command.`");
+            return jokerShellHelper.getErrorMessage("Can't find exploit mod named " + exploitName + ". Please use `list command to find exist command.`");
         }
         ShellContext shellContext = shellContext();
         Map<String, String> params = new HashMap<>();
@@ -41,7 +41,7 @@ public class UseCommand extends JokerCommandManager {
 
         shellContext.setParams(params);
         jokerContext.shellRegister(shellContext);
-        return shellHelper.getSuccessMessage(String.format("Use %s exploit", exploitName));
+        return jokerShellHelper.getSuccessMessage(String.format("Use %s exploit", exploitName));
     }
 
     @ShellMethod(value = "run exploit", key = "exploit", group = "Joker")

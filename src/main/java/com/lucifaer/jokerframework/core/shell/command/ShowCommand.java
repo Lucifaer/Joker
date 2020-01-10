@@ -1,7 +1,7 @@
 package com.lucifaer.jokerframework.core.shell.command;
 
 import com.lucifaer.jokerframework.core.factory.ExploitFactory;
-import com.lucifaer.jokerframework.core.shell.config.ShellHelper;
+import com.lucifaer.jokerframework.core.shell.config.JokerShellHelper;
 import com.lucifaer.jokerframework.modules.Exploit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
@@ -13,7 +13,7 @@ import java.util.List;
 @ShellComponent
 public class ShowCommand {
     @Autowired
-    ShellHelper shellHelper;
+    JokerShellHelper jokerShellHelper;
 
     @Autowired
     ExploitFactory exploitFactory;
@@ -25,7 +25,7 @@ public class ShowCommand {
         List<String[]> result = exploit.documentation();
         for (String[] option : result) {
             for (String s : option) {
-                shellHelper.echoDocument(s);
+                jokerShellHelper.echoDocument(s);
             }
         }
     }

@@ -17,9 +17,6 @@ public class ServerFactory implements FactoryBean, ApplicationContextAware {
     @Autowired
     JokerContext jokerContext;
 
-    @Autowired
-    ApplicationContext applicationContext;
-
 //  TODO: 这一部分的代码与ExploitFactory逻辑相同，后续考虑进行合并
     public Map<String, Server> serverMap = new HashMap<>();
 

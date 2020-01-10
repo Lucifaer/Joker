@@ -20,6 +20,7 @@ public class JokerShellProvider extends ValueProviderSupport {
             "command",
             "serverUrl",
             "serverPort",
+            "standardRmiServer",
             "referenceClassName",
             "referenceFactoryName",
             "referenceFactoryLocation"

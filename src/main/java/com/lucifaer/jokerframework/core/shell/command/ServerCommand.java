@@ -1,7 +1,7 @@
 package com.lucifaer.jokerframework.core.shell.command;
 
 import com.lucifaer.jokerframework.core.factory.ServerFactory;
-import com.lucifaer.jokerframework.core.shell.config.ShellHelper;
+import com.lucifaer.jokerframework.core.shell.config.JokerShellHelper;
 import com.lucifaer.jokerframework.data.CommandManagerContext;
 import com.lucifaer.jokerframework.data.JokerContext;
 import com.lucifaer.jokerframework.data.ShellContext;
@@ -20,7 +20,7 @@ public class ServerCommand {
     JokerContext jokerContext;
 
     @Autowired
-    ShellHelper shellHelper;
+    JokerShellHelper jokerShellHelper;
 
     @Autowired
     ServerFactory serverFactory;
@@ -36,7 +36,7 @@ public class ServerCommand {
 
         shellContext.setParams(params);
         jokerContext.shellRegister(shellContext);
-        return shellHelper.getSuccessMessage(String.format("Setup %s server", serverName));
+        return jokerShellHelper.getSuccessMessage(String.format("Setup %s server", serverName));
     }
 
     @ShellMethod(value = "start server", key = "run", group = "Joker")
