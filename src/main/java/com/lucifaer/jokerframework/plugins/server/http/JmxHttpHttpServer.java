@@ -27,6 +27,11 @@ public class JmxHttpHttpServer extends BaseHttpServer implements Server, HttpHan
     }
 
     @Override
+    public String getServerName() {
+        return "jmxhttp";
+    }
+
+    @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         if (httpExchange.getRequestURI().toString().endsWith("/")) {
             String mlet_code = "<HTML>\n" +

@@ -23,7 +23,7 @@ public class HelpCommand implements Help.Command {
         try {
             currentCommandNode = jokerContext.getCurrentShellContext().commandNode.peek();
         }catch (NullPointerException e) {
-            e.printStackTrace();
+
         }
 
         switch (jokerOption) {

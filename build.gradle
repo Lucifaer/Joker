@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version "2.2.2.RELEASE"
+//    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
 group 'com.lucifaer'
@@ -23,7 +24,7 @@ dependencies {
 jar {
     manifest {
         attributes "Manifest-Version": 1.0,
-                "Main-Class": "com.lucifaer.jokerframework.core.shell.JokerShell"
+                "Main-Class": "com.lucifaer.jokerframework.Joker"
     }
     from {
         sourceSets.main.runtimeClasspath

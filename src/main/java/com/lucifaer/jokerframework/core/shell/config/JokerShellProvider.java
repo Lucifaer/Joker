@@ -20,6 +20,9 @@ public class JokerShellProvider extends ValueProviderSupport {
             "command",
             "serverUrl",
             "serverPort",
+            "referenceClassName",
+            "referenceFactoryName",
+            "referenceFactoryLocation"
     };
 
     @Override

@@ -1,13 +1,13 @@
 package com.lucifaer.jokerframework.core.config;
 
-import com.lucifaer.jokerframework.core.factory.ExploitFactory;
+import com.lucifaer.jokerframework.core.factory.ServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ExploitConfiguration {
+public class ServerConfiguration {
     @Bean
-    public ExploitFactory exploitFactory() {
-        return new ExploitFactory();
+    public ServerFactory serverFactory() {
+        return new ServerFactory();
     }
 }

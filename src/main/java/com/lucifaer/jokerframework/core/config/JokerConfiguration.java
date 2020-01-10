@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @Configurable
-@Import({ShellConfiguration.class, ExploitConfiguration.class})
+@Import({ShellConfiguration.class, ExploitConfiguration.class, ServerConfiguration.class})
 public class JokerConfiguration {
     @Bean
     public JokerContext jokerContext() {

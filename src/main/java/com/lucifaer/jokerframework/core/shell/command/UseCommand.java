@@ -9,14 +9,11 @@ import com.lucifaer.jokerframework.data.ShellContext;
 import com.lucifaer.jokerframework.modules.Exploit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Lookup;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @ShellComponent
@@ -44,7 +41,7 @@ public class UseCommand extends JokerCommandManager {
 
         shellContext.setParams(params);
         jokerContext.shellRegister(shellContext);
-        return shellHelper.getSuccessMessage(String.format("Use %s", exploitName));
+        return shellHelper.getSuccessMessage(String.format("Use %s exploit", exploitName));
     }
 
     @ShellMethod(value = "run exploit", key = "exploit", group = "Joker")
