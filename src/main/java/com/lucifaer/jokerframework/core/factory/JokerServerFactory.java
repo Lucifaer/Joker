@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class ServerFactory implements ApplicationContextAware {
+public class JokerServerFactory implements ApplicationContextAware {
     @Autowired
     JokerContext jokerContext;
 
