@@ -4,24 +4,23 @@ import com.lucifaer.jokerframework.data.JokerContext;
 import com.lucifaer.jokerframework.data.ShellContext;
 import com.lucifaer.jokerframework.plugins.Server;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServerFactory implements FactoryBean, ApplicationContextAware {
+@Component
+public class ServerFactory implements ApplicationContextAware {
     @Autowired
     JokerContext jokerContext;
 
-//  TODO: 这一部分的代码与ExploitFactory逻辑相同，后续考虑进行合并
-    public Map<String, Server> serverMap = new HashMap<>();
+    private Map<String, Server> serverMap = new HashMap<>();
 
-    @Override
-    public Object getObject() throws Exception {
+    public Server getObject() throws Exception {
         ShellContext shellContext = jokerContext.getCurrentShellContext();
         String paramsServerName = shellContext.getParams().get("serverName");
         for (String serverName : serverMap.keySet()) {
@@ -30,16 +29,6 @@ public class ServerFactory implements FactoryBean, ApplicationContextAware {
             }
         }
         throw new Exception("No server named " + paramsServerName);
-    }
-
-    @Override
-    public Class<?> getObjectType() {
-        return Server.class;
-    }
-
-    @Override
-    public boolean isSingleton() {
-        return false;
     }
 
     @Override

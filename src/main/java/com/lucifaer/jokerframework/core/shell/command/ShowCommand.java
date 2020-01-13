@@ -21,7 +21,7 @@ public class ShowCommand {
     @ShellMethod(value = "show configurations", key = "show_options", group = "Joker")
     @ShellMethodAvailability("isUsed")
     public void doShow() throws Exception {
-        Exploit exploit = (Exploit) exploitFactory.getObject();
+        Exploit exploit = exploitFactory.getObject();
         List<String[]> result = exploit.documentation();
         for (String[] option : result) {
             for (String s : option) {

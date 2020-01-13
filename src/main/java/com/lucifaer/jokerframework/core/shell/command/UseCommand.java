@@ -29,7 +29,7 @@ public class UseCommand extends JokerCommandManager {
 
     @ShellMethod(value = "use exploit model", key = "use", group = "Joker")
     public String doUse(String exploitName) {
-        if (!exploitFactory.exploitMap.containsKey(exploitName)) {
+        if (!jokerContext.getExistExploitMap().containsKey(exploitName)) {
             return jokerShellHelper.getErrorMessage("Can't find exploit mod named " + exploitName + ". Please use `list command to find exist command.`");
         }
         ShellContext shellContext = shellContext();
@@ -47,7 +47,7 @@ public class UseCommand extends JokerCommandManager {
     @ShellMethod(value = "run exploit", key = "exploit", group = "Joker")
     @ShellMethodAvailability("isUsed")
     public void doExploit() throws Exception {
-        Exploit exploit = (Exploit) exploitFactory.getObject();
+        Exploit exploit = exploitFactory.getObject();
         exploit.exploit();
     }
 

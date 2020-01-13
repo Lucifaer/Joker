@@ -41,7 +41,7 @@ public class ServerCommand {
 
     @ShellMethod(value = "start server", key = "run", group = "Joker")
     public void doRun() throws Exception {
-        Server server = (Server) serverFactory.getObject();
+        Server server = serverFactory.getObject();
         server.createServer();
     }
 
