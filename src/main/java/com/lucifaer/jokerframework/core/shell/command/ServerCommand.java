@@ -1,6 +1,6 @@
 package com.lucifaer.jokerframework.core.shell.command;
 
-import com.lucifaer.jokerframework.core.factory.ServerFactory;
+import com.lucifaer.jokerframework.core.factory.JokerServerFactory;
 import com.lucifaer.jokerframework.core.shell.config.JokerShellHelper;
 import com.lucifaer.jokerframework.data.CommandManagerContext;
 import com.lucifaer.jokerframework.data.JokerContext;
@@ -23,7 +23,7 @@ public class ServerCommand {
     JokerShellHelper jokerShellHelper;
 
     @Autowired
-    ServerFactory serverFactory;
+    JokerServerFactory jokerServerFactory;
 
     @ShellMethod(value = "use server model", key = "server", group = "Joker")
     public String doServer(String serverName) {
@@ -41,8 +41,14 @@ public class ServerCommand {
 
     @ShellMethod(value = "start server", key = "run", group = "Joker")
     public void doRun() throws Exception {
-        Server server = serverFactory.getObject();
+        Server server = jokerServerFactory.getObject();
         server.createServer();
+    }
+
+    @ShellMethod(value = "stop server", key = "stop", group = "Joker")
+    public void doStop() throws Exception {
+        Server server = jokerServerFactory.getObject();
+        server.stopServer();
     }
 
     @Lookup
