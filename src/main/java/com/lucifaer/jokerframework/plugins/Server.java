@@ -8,6 +8,8 @@ public interface Server {
 
     void stopServer();
 
+    String getServerName();
+
     String getServerUrl();
 
     String getServerPort();

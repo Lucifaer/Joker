@@ -18,11 +18,10 @@ public class JokerPromptProvider implements PromptProvider {
     public AttributedString getPrompt() {
         String prompt = "Joker:>";
         String currentShellContextName = jokerContext.getCurrentShell();
-        System.out.println(jokerContext.getShellContextMap());
         if (currentShellContextName != null) {
             shellContext = jokerContext.getCurrentShellContext();
             for (String node : shellContext.commandNode) {
-                if ("use".equals(node)) {
+                if ("use".equals(node) || "server".equals(node)) {
                     try {
                         prompt = String.format("(%s) Joker:>", shellContext.contextName);
                         break;

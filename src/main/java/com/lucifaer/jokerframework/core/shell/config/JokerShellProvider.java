@@ -14,10 +14,16 @@ import java.util.stream.Collectors;
 public class JokerShellProvider extends ValueProviderSupport {
 
     private final static String[] values = new String[] {
+            "exploit",
+            "server",
             "targetUrl",
             "command",
             "serverUrl",
             "serverPort",
+            "standardRmiServer",
+            "referenceClassName",
+            "referenceFactoryName",
+            "referenceFactoryLocation"
     };
 
     @Override
