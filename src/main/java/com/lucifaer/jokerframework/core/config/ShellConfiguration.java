@@ -1,8 +1,8 @@
 package com.lucifaer.jokerframework.core.config;
 
-import com.lucifaer.jokerframework.core.shell.config.DefaultDocumentation;
-import com.lucifaer.jokerframework.core.shell.config.JokerShellHelper;
-import com.lucifaer.jokerframework.data.ShellContext;
+import com.lucifaer.jokerframework.core.context.ShellContext;
+import com.lucifaer.jokerframework.core.shell.ShellHelper;
+import com.lucifaer.jokerframework.core.shell.ShellThrowableHandler;
 import org.jline.terminal.Terminal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +18,10 @@ public class ShellConfiguration {
     }
 
     @Bean
-    public JokerShellHelper ShellCodeHelper(@Lazy Terminal terminal) {
-        return new JokerShellHelper(terminal);
+    public ShellHelper shellHelper(@Lazy Terminal terminal) {
+        return new ShellHelper(terminal);
     }
 
     @Bean
-    public DefaultDocumentation defaultDocumentation() {
-        return new DefaultDocumentation();
-    }
+    public ShellThrowableHandler shellThrowableHandler(@Lazy Terminal terminal) {return new ShellThrowableHandler(terminal);}
 }

@@ -1,58 +1,95 @@
 package com.lucifaer.jokerframework.core.shell.command;
 
-import com.lucifaer.jokerframework.core.shell.config.JokerCommandManager;
-import com.lucifaer.jokerframework.core.shell.config.JokerShellProvider;
-import com.lucifaer.jokerframework.core.shell.config.JokerShellHelper;
-import com.lucifaer.jokerframework.data.JokerContext;
-import com.lucifaer.jokerframework.data.ShellContext;
+import com.lucifaer.jokerframework.core.context.Context;
+import com.lucifaer.jokerframework.core.context.JokerContext;
+import com.lucifaer.jokerframework.core.context.ShellContext;
+import com.lucifaer.jokerframework.core.exception.SessionNotFound;
+import com.lucifaer.jokerframework.core.shell.ShellHelper;
+import com.lucifaer.jokerframework.core.task.CommonJokerTask;
+import com.lucifaer.jokerframework.core.task.ExploitJokerTask;
+import com.lucifaer.jokerframework.core.task.ServerJokerTask;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellMethodAvailability;
-import org.springframework.shell.standard.ShellOption;
+
+import java.util.Map;
 
 @ShellComponent
-@Lazy
-public class CommonCommand extends JokerCommandManager {
+public class CommonCommand {
     @Autowired
     JokerContext jokerContext;
+
     @Autowired
-    JokerShellHelper jokerShellHelper;
+    ShellHelper shellHelper;
 
-    private ShellContext shellContext;
+    @Autowired
+    ServerJokerTask serverJokerTask;
 
-    @ShellMethod(value = "set exploit options", key = "set", group = "Joker")
-    @ShellMethodAvailability("isUsed")
-    public String doSet(@ShellOption(valueProvider = JokerShellProvider.class) String config, String value) {
-        this.shellContext = jokerContext.getCurrentShellContext();
+    @Autowired
+    CommonJokerTask commonTask;
+
+    @Autowired
+    ExploitJokerTask exploitJokerTask;
+
+    @ShellMethod(value = "set param", key = "set", group = "Common")
+    public String set(String config, String value) {
+        ShellContext shellContext = (ShellContext) jokerContext.currentShell;
         shellContext.getParams().put(config, value);
-        if ("payloadName".equals(config)) {
-            stackHandler("payload");
+        return shellHelper.getInfoMessage(String.format("set %s with %s", config, value));
+    }
+
+    @ShellMethod(value = "list exist mods", key = "list", group = "Common")
+    public void list(String type) {
+        switch (type) {
+            case "server":
+                for (String existServer : serverJokerTask.listExistTask().keySet()) {
+                    shellHelper.echoDocument(existServer);
+                }
+                break;
+            case "session":
+                for (String existSession : commonTask.listTask().keySet()) {
+                    shellHelper.echoDocument(existSession);
+                }
+                break;
+            case "server_process":
+                Map<String, Map> serverMap = serverJokerTask.listTask();
+                for (String serverProcess : serverMap.keySet()) {
+                    shellHelper.echoDocument("sessionId: " + serverProcess +
+                            "\t\tserverName: " + serverMap.get(serverProcess).get("serverName") +
+                            "\tserverPort: " + serverMap.get(serverProcess).get("serverPort"));
+                }
+                break;
+            case "exploit":
+                for (String existExploit : exploitJokerTask.listTask().keySet()) {
+                    shellHelper.echoDocument(existExploit);
+                }
+                break;
+            default:
+                shellHelper.echoInfo("list server");
+        }
+    }
+
+    @ShellMethod(value = "checkout a session", key = "checkout", group = "Common")
+    public void checkout(String sessionId) throws SessionNotFound {
+        Map<String, Context> sessionMap = jokerContext.getSessionMap();
+        if (sessionMap.containsKey(sessionId)) {
+            jokerContext.currentShell = sessionMap.get(sessionId);
         }
         else {
-            stackHandler("set");
-        }
-        return jokerShellHelper.getSuccessMessage(String.format("set %s with %s", config, value));
-    }
-
-    @ShellMethod(value = "list exist type mod", key = "list", group = "Joker")
-    public void doList(String type) {
-        if ("exploit".equals(type)) {
-            for (String existExploitName : jokerContext.getExistExploitMap().keySet()) {
-                jokerShellHelper.echoDocument(existExploitName);
-            }
-        }
-        else if ("server".equals(type)) {
-            for (String existServerName : jokerContext.getExistServerMap().keySet()) {
-                jokerShellHelper.echoDocument(existServerName);
-            }
+            throw new SessionNotFound(sessionId);
         }
     }
 
-    private void stackHandler(String node) {
-        if (!shellContext.commandNode.peek().equals(node)) {
-            shellContext.commandNode.push(node);
-        }
+    @ShellMethod(value = "exit current session", key = "q", group = "Common")
+    public void q() {
+        jokerContext.currentShell = null;
+    }
+
+    @ShellMethod(value = "delete ")
+
+    @Lookup
+    protected ShellContext shellContext() {
+        return null;
     }
 }
