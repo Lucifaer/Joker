@@ -1,14 +1,14 @@
 package com.lucifaer.jokerframework.core.factory;
 
-import com.lucifaer.jokerframework.core.exploit.JokerExploit;
+import com.lucifaer.jokerframework.core.server.JokerServer;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ExploitFactory extends JokerFactory<JokerExploit> {
-    public ExploitFactory() {
-        this.setBeansOfType(JokerExploit.class);
+public class ServerFactory extends JokerFactory<JokerServer> {
+    public ServerFactory() {
+        this.setBeansOfType(JokerServer.class);
     }
 
     @Override
