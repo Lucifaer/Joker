@@ -1,37 +1,20 @@
-plugins {
-    id 'java'
-    id 'org.springframework.boot' version "2.2.2.RELEASE"
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    group 'com.lucifaer'
+    version '1.0'
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile(
+                "ch.qos.logback:logback-core:1.2.3",
+                "ch.qos.logback:logback-classic:1.2.3"
+        )
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
 }
-apply plugin: 'io.spring.dependency-management'
-
-group 'com.lucifaer'
-version '1.0.RELEASE'
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile("org.springframework.shell:spring-shell-starter:2.0.0.RELEASE")
-    compile("org.springframework.boot:spring-boot-starter-test:1.5.8.RELEASE")
-    compile("com.unboundid:unboundid-ldapsdk:5.0.1")
-
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile("com.github.stefanbirkner:system-rules:1.19.0")
-
-    compile("com.nqzero:permit-reflect:0.3")
-
-    compile files("lib/coherence.jar")
-    compile files("lib/coherence-rest.jar")
-    compile files("lib/wlthint3client.jar")
-}
-
-springBoot {
-    mainClassName = "com.lucifaer.jokerframework.Joker"
-}
-
-//bootRun {
-//    standardInput = System.in
-//}
