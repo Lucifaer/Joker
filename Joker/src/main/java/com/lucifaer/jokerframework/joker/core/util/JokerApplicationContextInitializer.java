@@ -23,7 +23,7 @@ public class JokerApplicationContextInitializer implements ApplicationContextIni
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
         ClassLoader beanClassLoader = beanFactory.getBeanClassLoader();
         log.info("Exploit lib: " + getPath());
-        List<Class<?>> list1 = ClassScanner.loadClass("/Users/Lucifaer/Dropbox/Code/Java/exp/cve_2020_2555/build/libs/", beanClassLoader);
+        List<Class<?>> list1 = ClassScanner.loadClass(getPath(), beanClassLoader);
         log.info("=============================Plugin Loading===============================");
         for (Class<?> clazz : list1) {
             if (clazz.getAnnotation(Exploitor.class) != null) {
@@ -44,6 +44,6 @@ public class JokerApplicationContextInitializer implements ApplicationContextIni
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return filePath + fileSeparator;
+        return filePath + fileSeparator + "exploitLib";
     }
 }

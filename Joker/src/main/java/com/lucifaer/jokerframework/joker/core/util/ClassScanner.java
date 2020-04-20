@@ -44,7 +44,7 @@ public class ClassScanner {
                             URLClassLoader classLoader = (URLClassLoader) beanClassLoader;
                             method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                             accessible = method.isAccessible();
-                            if (accessible == false) {
+                            if (!accessible) {
                                 method.setAccessible(true);
                             }
 
@@ -58,6 +58,8 @@ public class ClassScanner {
                                 classList.add(classLoader.loadClass(className));
                             }
                             else if (className.endsWith(".jar")) {
+                                log.info("ClassScanner loading plugins: ");
+                                log.warn("These class have a dependency error, but if you use part of them, it will be fine.");
                                 url = subFile.toURI().toURL();
                                 method.invoke(classLoader, url);
 
@@ -72,10 +74,14 @@ public class ClassScanner {
 
                                     name = name.replace(File.separatorChar, '.');
 
-                                    if (name.endsWith(".class") && !entry.isDirectory()) {
-                                        String className1 = name.substring(0, name.length()-6);
-                                        classList.add(classLoader.loadClass(className1));
-                                    }
+                                        if (name.endsWith(".class") && !entry.isDirectory()) {
+                                            try {
+                                                String className1 = name.substring(0, name.length()-6);
+                                                classList.add(classLoader.loadClass(className1));
+                                            }catch (Throwable e) {
+                                                log.warn("* " + name);
+                                            }
+                                        }
                                 }
 
                             }
