@@ -14,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.Map;
 
 public class JokerApplicationContextInitializer implements ApplicationContextInitializer {
     private static final Logger log = LoggerFactory.getLogger(JokerApplicationContextInitializer.class);
@@ -21,18 +22,21 @@ public class JokerApplicationContextInitializer implements ApplicationContextIni
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
-        ClassLoader beanClassLoader = beanFactory.getBeanClassLoader();
+//        ClassLoader beanClassLoader = beanFactory.getBeanClassLoader();
         log.info("Exploit lib: " + getPath());
-        List<Class<?>> list1 = ClassScanner.loadClass(getPath(), beanClassLoader);
+//        Map<String, Map<String, Object>> pluginsMap = ClassLoaderUtil.loader(getPath(), beanClassLoader);
+//        List<Class<?>> list1 = ClassScanner.loadClass(getPath(), beanClassLoader);
         log.info("=============================Plugin Loading===============================");
-        for (Class<?> clazz : list1) {
-            if (clazz.getAnnotation(Exploitor.class) != null) {
-                String beanName = clazz.getAnnotation(Exploitor.class).value();
-                BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
-                beanFactory.registerBeanDefinition(clazz.getAnnotation(Exploitor.class).value(), beanDefinitionBuilder.getRawBeanDefinition());
-                log.info("Registered new exploit plugin: " + beanName);
-            }
-        }
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(ClassLoaderUtil.class);
+        beanFactory.registerBeanDefinition("plugins", beanDefinitionBuilder.getRawBeanDefinition());
+//        for (Class<?> clazz : list1) {
+//            if (clazz.getAnnotation(Exploitor.class) != null) {
+//                String beanName = clazz.getAnnotation(Exploitor.class).value();
+//                BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
+//                beanFactory.registerBeanDefinition(clazz.getAnnotation(Exploitor.class).value(), beanDefinitionBuilder.getRawBeanDefinition());
+//                log.info("Registered new exploit plugin: " + beanName);
+//            }
+//        }
         log.info("=============================End Loading==================================");
     }
 

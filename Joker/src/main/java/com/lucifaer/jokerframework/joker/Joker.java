@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Joker {
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(Joker.class);
-        application.addInitializers(new JokerApplicationContextInitializer());
+//        application.addInitializers(new JokerApplicationContextInitializer());
         application.run(args);
     }
 }
