@@ -1,16 +1,3 @@
-plugins {
-    id 'java'
-}
-
-group 'com.lucifaer'
-version '1.0'
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     compile("com.nqzero:permit-reflect:0.3")
     testCompile("com.github.stefanbirkner:system-rules:1.19.0")

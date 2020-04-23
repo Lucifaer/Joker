@@ -5,11 +5,6 @@ plugins {
     id 'org.springframework.boot' version "2.2.6.RELEASE"
 }
 
-group 'com.lucifaer'
-version '1.0'
-
-sourceCompatibility = 1.8
-
 repositories {
     mavenCentral()
 }
