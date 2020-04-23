@@ -1,8 +1,6 @@
 package com.lucifaer.jokerframework.joker.core.util;
 
 import com.lucifaer.jokerframework.sdk.annotation.Exploitor;
-import com.lucifaer.jokerframework.sdk.api.Exploit;
-import com.lucifaer.jokerframework.sdk.context.ShellContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +12,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -28,8 +23,8 @@ public class ClassLoaderUtil {
     private static final Logger log = LoggerFactory.getLogger(ClassLoaderUtil.class);
     private Map<String, Map<String, Object>> pluginsMap = new HashMap<>();
     public ClassLoaderUtil() {
-        log.info(getPath());
-        this.pluginsMap = loader("/Users/Lucifaer/Dropbox/VulExploit/JokerFrameWork/Joker/build/libs/exploitLib");
+        log.info("插件目录为：" + getPath());
+        this.pluginsMap = loader(getPath());
     }
 
     private static String getPath() {
@@ -44,42 +39,13 @@ public class ClassLoaderUtil {
     }
 
     public Map<String, Map<String, Object>> getPluginsMap() {
+        if (pluginsMap.isEmpty()) {
+            log.warn("未找到漏洞插件，请核对插件目录是否正确！");
+        }
         return pluginsMap;
-    }
-    public static void main(String[] args) {
-        Exploit exploit = null;
-        ClassLoaderUtil plugins = new ClassLoaderUtil();
-        Map<String, Map<String, Object>> pluginMap = plugins.loader("/Users/Lucifaer/Dropbox/VulExploit/JokerFrameWork/Joker/build/libs/exploitLib");
-        ShellContext shellContext = new ShellContext();
-        Map<String, String> params = new HashMap<>();
-        params.put("targetUrl", "127.0.0.1");
-        params.put("targetPort", "7001");
-        params.put("command", "open /System/Applications/Calculator.app");
-        shellContext.setParams(params);
-
-        Map<String, Object> pluginInfo = pluginMap.get("cve-2020-2555(12.2.1.4)");
-        ExecutorService pool = Executors.newCachedThreadPool();
-        ExploitTest2 exploitTest = new ExploitTest2(pluginInfo, shellContext);
-        Future<Exploit> future = pool.submit(exploitTest);
-        while (true) {
-            if (future.isDone()) {
-                try {
-                    exploit = future.get();
-                }catch (Exception e) {
-                    e.printStackTrace();
-                }
-                pool.shutdown();
-                break;
-            }
-        }
-        if (exploit != null) {
-            Exploit3Test exploit3Test = new Exploit3Test(exploit, pluginInfo ,shellContext);
-            exploit3Test.start();
-        }
     }
 
     public Map<String, Map<String, Object>> loader(String filePath) {
-        log.info("in loader");
         File file = new File(filePath);
         if (file.exists() && file.isDirectory()) {
             Stack<File> stack = new Stack<>();
@@ -90,7 +56,6 @@ public class ClassLoaderUtil {
 
 
                 for (File jar : subFile) {
-                    log.info(jar.getAbsolutePath());
                     URL[] url = null;
                     JarFile jarFile = null;
                     Method method = null;
@@ -128,18 +93,10 @@ public class ClassLoaderUtil {
                                 }
                             }
                         }
-                        log.info(Exploitor.class.getName());
-                        log.info(String.valueOf(classList.size()));
                         for (Class<?> clazz : classList) {
-                            if (Exploit.class.isAssignableFrom(clazz)) {
-                                log.info(clazz.getName());
-                            }
                             if (clazz.getAnnotation(Exploitor.class) != null) {
-                                log.info("1");
                                 String pluginName = clazz.getAnnotation(Exploitor.class).value();
-                                log.info("pluginName: " + pluginName);
                                 pluginsInfo.put("pluginName", pluginName);
-                                log.info("referencePath: " + clazz.getName());
                                 pluginsInfo.put("referencePath", clazz.getName());
                             }
                         }
