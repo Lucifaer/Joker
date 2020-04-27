@@ -1,11 +1,11 @@
 package com.lucifaer.jokerframework.joker.core.util;
 
-import com.lucifaer.jokerframework.sdk.annotation.Exploitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -62,7 +62,7 @@ public class ClassLoaderUtil {
                     Boolean accessible = null;
                     String className = jar.getAbsolutePath();
                     Map<String, Object> pluginsInfo = new HashMap<>();
-                    List<Class<?>> classList = new ArrayList<>();
+//                    List<Class<?>> classList = new ArrayList<>();
 
                     try {
                         url = new URL[] {jar.toURI().toURL()};
@@ -87,19 +87,27 @@ public class ClassLoaderUtil {
                             if (name.endsWith(".class") && !entry.isDirectory()) {
                                 try {
                                     String className1 = name.substring(0, name.length()-6);
-                                    classList.add(classLoader.loadClass(className1));
+//                                    classList.add(classLoader.loadClass(className1));
+                                    classLoader.loadClass(className1);
                                 }catch (Throwable e) {
 //                                    log.error(e.getMessage());
                                 }
                             }
                         }
-                        for (Class<?> clazz : classList) {
-                            if (clazz.getAnnotation(Exploitor.class) != null) {
-                                String pluginName = clazz.getAnnotation(Exploitor.class).value();
-                                pluginsInfo.put("pluginName", pluginName);
-                                pluginsInfo.put("referencePath", clazz.getName());
-                            }
-                        }
+
+                        InputStream in = classLoader.getResourceAsStream("exploitPlugin.properties");
+                        Properties p = new Properties();
+                        p.load(in);
+//                        log.info(p.getProperty("pluginName"));
+//                        for (Class<?> clazz : classList) {
+//                            if (clazz.getAnnotation(Exploitor.class) != null) {
+//                                String pluginName = clazz.getAnnotation(Exploitor.class).value();
+//                                pluginsInfo.put("pluginName", pluginName);
+//                                pluginsInfo.put("referencePath", clazz.getName());
+//                            }
+//                        }
+                        pluginsInfo.put("pluginName", p.getProperty("pluginName"));
+                        pluginsInfo.put("referencePath", p.getProperty("referencePath"));
                         pluginsInfo.put("classLoader", classLoader);
                         pluginsMap.put((String) pluginsInfo.get("pluginName"), pluginsInfo);
                     } catch (Exception e) {
