@@ -387,6 +387,28 @@ import java.util.Map;
     }
 </code></pre>
 
+<h3 id="toc_6">2.3 创建并设置exploitPlugin.properties</h3>
+
+<p>在具体的exp代码编写结束后，在<code>resources</code>目录下创建一个<code>exploitPlugin.properties</code>，设置插件的相关信息：</p>
+
+<ul>
+<li><code>pluginName</code>：插件名，与exp中<code>@Exploitor</code>注解的<code>value</code>名称相同。</li>
+<li><code>referencePath</code>：exp具体实现类路径。如<code>com.lucifaer.exp.cve_2020_2555.Exp2</code></li>
+</ul>
+
+<p>同样以上面的<code>cve-2020-2555(12.2.1.3)</code>插件为例，其对应的<code>exploitPlugin.properties</code>为：</p>
+
+<pre><code class="language-text">pluginName = cve-2020-2555(12.2.1.3)
+referencePath = com.lucifaer.exp.cve_2020_2555.Exp2
+</code></pre>
+
+<h2 id="toc_7">0x03 打包插件</h2>
+
+<p>exploit插件没有需要特别注意的打包细节，直接执行如下命令打为jar包即可：</p>
+
+<pre><code class="language-text">./gradlew build
+</code></pre>
+
 
 </div>
 

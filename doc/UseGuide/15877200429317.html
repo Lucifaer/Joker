@@ -196,6 +196,91 @@
  <div class="markdown-body">
 <h1>编译指南</h1>
 
+<p><code>JokerFrameWork</code>默认使用<code>Gradle</code>打包，开发者使用的<code>Gradle</code>版本为：<code>Gradle 5.6.4</code>：</p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/28/15877209805807.jpg" alt=""/></p>
+
+<h2 id="toc_0">0x01 JokerFrameWork项目编译流程</h2>
+
+<p>在项目的根目录运行如下命令完成编译：</p>
+
+<pre><code class="language-text">./gradlew shadowJar
+</code></pre>
+
+<p>编译后的项目位于：</p>
+
+<ul>
+<li><code>Joker</code>位于<code>JokerFrameWork/Joker/build/libs/Joker.jar</code></li>
+<li><code>JokerSDK</code>位于<code>JokerFrameWork/JokerSDK/build/libs/JokerSDK-4.0.jar</code></li>
+</ul>
+
+<h2 id="toc_1">0x02 Joker项目编译流程</h2>
+
+<p>如果需要单独构建<code>Joker</code>项目的话（适用于<code>Joker</code>核心二次开发者），切换到Joker项目的根目录<code>JokerFrameWork/Joker</code>，执行如下命令完成编译：</p>
+
+<pre><code class="language-text">gradle shadowJar
+</code></pre>
+
+<p>或者直接在根目录运行：</p>
+
+<pre><code class="language-text">./gradlew shadowJar
+</code></pre>
+
+<p>编译后的项目位于：<code>JokerFrameWork/Joker/build/libs/Joker.jar</code></p>
+
+<h3 id="toc_2">注意</h3>
+
+<p><strong><code>Joker</code>项目在编译时一定不要用<code>gradle build</code>来完成编译！！！</strong></p>
+
+<p>由于<code>Joker</code>项目是基于<code>SpringBoot</code>完成的，所以默认使用了<code>SpringBoot</code>的Gradle插件，该插件打出的jar包和传统的jar包结构不同，最终将导致<code>Joker</code>初始化加载插件时出现<code>ClassLoader</code>的错误，错误示例如<a href="https://github.com/JadeF1ee/JokerFrameWork/issues/3">此issues</a>。</p>
+
+<h2 id="toc_3">0x03 其余项目的编译流程</h2>
+
+<p>除了<code>Joker</code>具有特殊性外，其余的项目都可以通过Gradle的<code>java</code>插件进行打包，并无特殊限制。</p>
+
+<h3 id="toc_4"><code>JokerSDK</code>项目的基础Gradle配置：</h3>
+
+<pre><code class="language-groovy">dependencies {
+    compile(&quot;com.nqzero:permit-reflect:0.3&quot;)
+    testCompile(&quot;com.github.stefanbirkner:system-rules:1.19.0&quot;)
+}
+
+jar {
+    from {
+        configurations.runtime.collect {
+            zipTree(it)
+        }
+    }
+}
+</code></pre>
+
+<h3 id="toc_5"><code>exploit</code>插件的基础Gradle配置：</h3>
+
+<pre><code class="language-groovy">plugins {
+    id &#39;java&#39;
+}
+
+group &#39;com.lucifaer.cve-2020-2555(12_2_1_4)&#39;
+version &#39;1.0&#39;
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile files(
+            &#39;../lib/JokerSDK-1.0.jar&#39;,
+    )
+    compile fileTree(dir: &#39;./lib&#39;, includes: [&#39;*.jar&#39;])
+    testCompile group: &#39;junit&#39;, name: &#39;junit&#39;, version: &#39;4.12&#39;
+}
+
+jar {
+    zip64 = true
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
+</code></pre>
 
 
 </div>
@@ -274,6 +359,8 @@ Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
 
 
 
+
+<script src="asset/prism.js"></script>
 
 
 <style type="text/css">
