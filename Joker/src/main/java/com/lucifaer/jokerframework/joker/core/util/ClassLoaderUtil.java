@@ -98,17 +98,11 @@ public class ClassLoaderUtil {
                         InputStream in = classLoader.getResourceAsStream("exploitPlugin.properties");
                         Properties p = new Properties();
                         p.load(in);
-//                        log.info(p.getProperty("pluginName"));
-//                        for (Class<?> clazz : classList) {
-//                            if (clazz.getAnnotation(Exploitor.class) != null) {
-//                                String pluginName = clazz.getAnnotation(Exploitor.class).value();
-//                                pluginsInfo.put("pluginName", pluginName);
-//                                pluginsInfo.put("referencePath", clazz.getName());
-//                            }
-//                        }
+
                         pluginsInfo.put("pluginName", p.getProperty("pluginName"));
                         pluginsInfo.put("referencePath", p.getProperty("referencePath"));
                         pluginsInfo.put("classLoader", classLoader);
+//                        pluginsInfo.put("jarPath", jarPath);
                         pluginsMap.put((String) pluginsInfo.get("pluginName"), pluginsInfo);
                     } catch (Exception e) {
                         e.printStackTrace();
