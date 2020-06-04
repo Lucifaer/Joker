@@ -4,7 +4,8 @@ import com.lucifaer.jokerframework.joker.core.error.JokerException;
 
 /**
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 public class ServerContextNameAlreadyUsed extends JokerException {
     public ServerContextNameAlreadyUsed(String serverId) {

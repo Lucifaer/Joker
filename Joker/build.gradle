@@ -5,15 +5,15 @@ plugins {
     id 'org.springframework.boot' version "2.2.6.RELEASE"
 }
 
-repositories {
-    mavenCentral()
-}
+group 'com.lucifaer'
+version '1.0.0.RELEASE'
 
 dependencies {
     compile project(':JokerSDK')
     compile("org.springframework.shell:spring-shell-starter:2.0.0.RELEASE")
     compile("org.springframework.boot:spring-boot-starter-test:1.5.8.RELEASE")
     compile("com.unboundid:unboundid-ldapsdk:5.0.1")
+    compile group: 'org.springframework.security', name: 'spring-security-web', version: '5.3.2.RELEASE'
 }
 
 shadowJar {
@@ -33,3 +33,4 @@ shadowJar {
     classifier = ''
     version = ''
 }
+

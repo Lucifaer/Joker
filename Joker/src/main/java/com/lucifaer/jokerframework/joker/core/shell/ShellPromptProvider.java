@@ -1,7 +1,7 @@
 package com.lucifaer.jokerframework.joker.core.shell;
 
-import com.lucifaer.jokerframework.sdk.context.Context;
 import com.lucifaer.jokerframework.joker.core.context.JokerContext;
+import com.lucifaer.jokerframework.sdk.context.Context;
 import com.lucifaer.jokerframework.sdk.context.ShellContext;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
@@ -9,9 +9,9 @@ import org.springframework.shell.jline.PromptProvider;
 import org.springframework.stereotype.Component;
 
 /**
- * ShellPromptProvider用于设置交互式命令行的显示前缀
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 @Component
 public class ShellPromptProvider implements PromptProvider {
@@ -28,12 +28,11 @@ public class ShellPromptProvider implements PromptProvider {
      * <p>3. "server": 启用服务情况下</p>
      * @return org.jline.utils.AttributedString 返回一个自定义的前缀对象
      * @author Lucifaer
-     * @version 3.0
-    */
+     */
     @Override
     public AttributedString getPrompt() {
         String prompt = "Joker:>";
-        Context currentShellContext = jokerContext.currentShell;
+        Context currentShellContext = jokerContext.getCurrentShell();
         if (currentShellContext != null){
             ShellContext shellContext = (ShellContext) currentShellContext;
             for (String node : shellContext.commandNode) {

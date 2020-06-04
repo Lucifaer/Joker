@@ -1,24 +1,25 @@
 package com.lucifaer.jokerframework.joker.core.dispatcher;
 
 import com.lucifaer.jokerframework.joker.core.BaseModel;
-import com.lucifaer.jokerframework.sdk.context.ShellContext;
-import com.lucifaer.jokerframework.joker.core.error.common.ContextTypeError;
-import com.lucifaer.jokerframework.joker.core.error.common.ParamsNotFound;
+import com.lucifaer.jokerframework.joker.core.error.core.ContextTypeError;
 import com.lucifaer.jokerframework.joker.core.error.core.ModelNotFound;
+import com.lucifaer.jokerframework.joker.core.error.core.ParamsNotFound;
 import com.lucifaer.jokerframework.joker.core.factory.BaseFactory;
 import com.lucifaer.jokerframework.joker.core.filter.BaseFilter;
 import com.lucifaer.jokerframework.joker.core.shell.ShellThrowableHandler;
-import com.lucifaer.jokerframework.sdk.api.Model;
+import com.lucifaer.jokerframework.sdk.context.ShellContext;
+import com.lucifaer.jokerframework.sdk.model.Model;
 
 /**
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 public abstract class BaseDispatcher<T extends Model> {
-    private final BaseModel<T> model;
-    private final BaseFactory<T> factory;
-    protected final BaseFilter<T> filter;
-    private final ShellThrowableHandler shellThrowableHandler;
+    protected BaseModel<T> model;
+    protected BaseFactory<T> factory;
+    protected BaseFilter<T> filter;
+    protected ShellThrowableHandler shellThrowableHandler;
 
     public BaseDispatcher(BaseModel<T> model, BaseFactory<T> factory, BaseFilter<T> filter, ShellThrowableHandler shellThrowableHandler) {
         this.model = model;
@@ -31,23 +32,22 @@ public abstract class BaseDispatcher<T extends Model> {
         T baseModel = null;
         try {
             if (filter.basicFilter((T) model, shellContext)) {
-                String modelName = shellContext.getParams().get(model.getModelTypeName() + "Name");
+                String modelName = shellContext.getParams().get(model.getModelType() + "Name");
                 for (String existModel : factory.getExistMap().keySet()) {
                     if (modelName.equals(existModel)) {
-                        baseModel = factory.getExistMap().get(modelName);
+                        baseModel = factory.getExistMap().get(existModel);
                     }
                 }
 
                 if (baseModel == null) {
                     throw new ModelNotFound(modelName);
                 }
-//                else {
-//                    filter.preCheck(baseModel, shellContext);
-//                }
             }
-        } catch (ModelNotFound | ParamsNotFound | ContextTypeError e) {
-            shellThrowableHandler.handleThrowable(e);
+        } catch (ParamsNotFound | ContextTypeError | ModelNotFound e) {
+            e.printStackTrace();
         }
         return baseModel;
     }
+
+    public Object dispatch(ShellContext shellContext) {return dispatcher(shellContext);}
 }

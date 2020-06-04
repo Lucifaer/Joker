@@ -1,12 +1,14 @@
-dependencies {
-    compile("com.nqzero:permit-reflect:0.3")
-    testCompile("com.github.stefanbirkner:system-rules:1.19.0")
+plugins {
+    id 'java'
 }
 
-jar {
-    from {
-        configurations.runtime.collect {
-            zipTree(it)
-        }
-    }
+group 'com.lucifaer'
+version '1.0.0.RELEASE'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }

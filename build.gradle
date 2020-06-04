@@ -1,9 +1,11 @@
 allprojects {
-    apply plugin: 'java'
     apply plugin: 'idea'
-
     group 'com.lucifaer'
-    version '4.0'
+    version '1.0.0.RELEASE'
+}
+
+subprojects {
+    apply plugin: 'java'
     sourceCompatibility = 1.8
 
     repositories {

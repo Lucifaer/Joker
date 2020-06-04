@@ -1,9 +1,9 @@
 package com.lucifaer.jokerframework.joker.core.context;
 
+import com.lucifaer.jokerframework.joker.core.error.core.SessionContextNameAlreadyUsed;
+import com.lucifaer.jokerframework.joker.core.error.core.SessionContextNotFound;
 import com.lucifaer.jokerframework.joker.core.error.server.ServerContextNameAlreadyUsed;
 import com.lucifaer.jokerframework.joker.core.error.server.ServerContextNameNotFound;
-import com.lucifaer.jokerframework.joker.core.error.session.SessionContextNameAlreadyUsed;
-import com.lucifaer.jokerframework.joker.core.error.session.SessionContextNotFound;
 import com.lucifaer.jokerframework.joker.core.server.Server;
 import com.lucifaer.jokerframework.joker.core.shell.ShellThrowableHandler;
 import com.lucifaer.jokerframework.sdk.context.Context;
@@ -13,61 +13,45 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * JokerContext为应用的根Context，包含了所有其他类型Context的内容，其中包含以下几个子Context：
- * <p>1. contextMap:全局上下文，包括sessionMap、serverMap</p>
- * <p>2. sessionMap:任务上下文，主要用于保存任务状态</p>
- * <p>3. serverMap:服务上下文，主要用于保存开启的服务别名及其端口信息</p>
  * @author Lucifaer
- * @version 3.0
+ * @version 4.1
  */
 @Component
 public class JokerContext implements Context {
     private ShellThrowableHandler shellThrowableHandler;
 
+    public JokerContext(ShellThrowableHandler shellThrowableHandler) {
+        this.shellThrowableHandler = shellThrowableHandler;
+    }
+
     private String contextName = "root";
     private String contextType = "root";
-    public Context currentShell = null;
+    private Context currentShell = null;
 
     private Map<String, Map> contextMap = new HashMap<>();
     private Map<String, Context> sessionMap = new HashMap<>();
     private Map<String, Map> serverMap = new HashMap<>();
-    
-    /**
-     * sessionRegister方法用于任务上下文的注册
-     * @param context 被注册的Context
-     * @throws SessionContextNameAlreadyUsed SessionContext名称重复
-     * @see SessionContextNameAlreadyUsed
-     * @author Lucifaer
-     * @version 3.0
-    */
+
     public void sessionRegister(Context context) {
         try {
             String contextName = context.getContextName();
-            if (this.sessionMap.containsKey(contextName)) {
+            if (sessionMap.containsKey(contextName)) {
                 throw new SessionContextNameAlreadyUsed(contextName);
             }
             else {
-                this.sessionMap.put(contextName, context);
-                this.currentShell = context;
-                this.contextMap.put("session", this.sessionMap);
+                sessionMap.put(contextName, context);
+                currentShell = context;
+                contextMap.put("session", sessionMap);
             }
         } catch (SessionContextNameAlreadyUsed sessionContextNameAlreadyUsed) {
             shellThrowableHandler.handleThrowable(sessionContextNameAlreadyUsed);
         }
     }
 
-    /**
-     * sessionUnRegister方法用于删除已注册的任务上下文
-     * @param sessionId 需要被删除的任务上下文id
-     * @throws SessionContextNotFound SessionContext不存在
-     * @see SessionContextNotFound
-     * @author Lucifaer
-     * @version 3.0
-    */
     public void sessionUnRegister(String sessionId) {
         try {
             if (sessionMap.containsKey(sessionId)) {
-                this.sessionMap.remove(sessionId);
+                sessionMap.remove(sessionId);
             }
             else {
                 throw new SessionContextNotFound(sessionId);
@@ -107,20 +91,40 @@ public class JokerContext implements Context {
         }
     }
 
+    public void setContextType(String contextType) {
+        this.contextType = contextType;
+    }
+
+    public Context getCurrentShell() {
+        return currentShell;
+    }
+
+    public void setCurrentShell(Context currentShell) {
+        this.currentShell = currentShell;
+    }
+
     public Map<String, Map> getContextMap() {
         return contextMap;
+    }
+
+    public void setContextMap(Map<String, Map> contextMap) {
+        this.contextMap = contextMap;
     }
 
     public Map<String, Context> getSessionMap() {
         return sessionMap;
     }
 
+    public void setSessionMap(Map<String, Context> sessionMap) {
+        this.sessionMap = sessionMap;
+    }
+
     public Map<String, Map> getServerMap() {
         return serverMap;
     }
 
-    public void setContextType(String contextType) {
-        this.contextType = contextType;
+    public void setServerMap(Map<String, Map> serverMap) {
+        this.serverMap = serverMap;
     }
 
     @Override

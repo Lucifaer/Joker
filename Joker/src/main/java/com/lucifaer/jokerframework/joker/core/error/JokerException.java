@@ -1,24 +1,23 @@
 package com.lucifaer.jokerframework.joker.core.error;
 
 /**
- * JokerException负责提供Joker自定义异常处理的信息输出
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 public class JokerException extends Throwable {
     protected String message;
 
     public JokerException(String message) {
-        super(message);
+        this.message = message;
     }
 
     @Override
     public String toString() {
-        return "Error{" +
-                "message='" + message + '\'' +
-                '}';
+        return "[Error] " + message;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }

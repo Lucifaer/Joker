@@ -7,9 +7,9 @@ import org.jline.utils.AttributedStyle;
 import org.springframework.util.StringUtils;
 
 /**
- * ShellThrowableHandler用于接收自定义错误，并以SpringShell的报错方式显示在交互式命令行中
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 public class ShellThrowableHandler {
     private Terminal terminal;
@@ -23,8 +23,7 @@ public class ShellThrowableHandler {
      * handleThrowable方法用于将自定义错误以SpringShell的报错方式显示在交互式命令行中
      * @param result 接收到的错误
      * @author Lucifaer
-     * @version 3.0
-    */
+     */
     public void handleThrowable(Throwable result) {
         lastError = result;
         String toPrint = StringUtils.hasLength(result.getMessage()) ? result.getMessage() : result.toString();
@@ -45,8 +44,7 @@ public class ShellThrowableHandler {
      * getLastError方法返回上一个错误
      * @return java.lang.Throwable 上一个错误
      * @author Lucifaer
-     * @version 3.0
-    */
+     */
     public Throwable getLastError() {
         return lastError;
     }

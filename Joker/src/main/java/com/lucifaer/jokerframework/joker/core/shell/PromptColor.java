@@ -1,9 +1,9 @@
 package com.lucifaer.jokerframework.joker.core.shell;
 
 /**
- * PromptColor为命令行颜色定义枚举类
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 public enum PromptColor {
     BLACK(0),

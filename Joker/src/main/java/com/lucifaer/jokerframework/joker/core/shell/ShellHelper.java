@@ -6,14 +6,9 @@ import org.jline.utils.AttributedStyle;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
- * ShellHelper为交互式命令行的输出设置，定义了以下几种不同的输出：
- * <p>1. info:     输出调用相关信息</p>
- * <p>2. success:  输出成功相关信息</p>
- * <p>3. warning:  输出警告相关信息</p>
- * <p>4. error:    输出错误相关信息</p>
- * <p>5. document: 输出帮助相关信息</p>
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 public class ShellHelper {
     @Value("${shell.out.info}")
@@ -43,8 +38,7 @@ public class ShellHelper {
      * @param color 显示颜色
      * @return java.lang.String 返回设置颜色的文本信息
      * @author Lucifaer
-     * @version 3.0
-    */
+     */
     private String getColored(String message, PromptColor color) {
         return (new AttributedStringBuilder()).append(message, AttributedStyle.DEFAULT.foreground(color.toJlineAttributedStyle())).toAnsi();
     }
@@ -75,8 +69,7 @@ public class ShellHelper {
      * @param message 输出的信息
      * @param color 显示颜色
      * @author Lucifaer
-     * @version 3.0
-    */
+     */
     private void echo(String message, PromptColor color) {
         String toEcho = message;
         if (color != null) {
@@ -91,7 +84,7 @@ public class ShellHelper {
     }
 
     public void echoInfo(String message) {
-        echo("[INFO] " + message, PromptColor.valueOf(infoColor));
+        echo(message, PromptColor.valueOf(infoColor));
     }
 
     public void echoWarning(String message) {

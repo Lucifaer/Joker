@@ -5,9 +5,9 @@ import com.lucifaer.jokerframework.sdk.context.ShellContext;
 import java.util.Map;
 
 /**
- * JokerTask接口负责对外提供Task相关方法，包括启动任务、关闭任务、列举任务
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 public interface Task {
     /**
@@ -17,23 +17,20 @@ public interface Task {
      * <p>3. 调用BaseModel具体实现的任务启动方法，启动任务</p>
      * @param shellContext 参数上下文
      * @author Lucifaer
-     * @version 3.0
-    */
+     */
     void createTask(ShellContext shellContext);
 
     /**
      * stopTask方法用于停止任务，并删除相关注册项
      * @param shellContext 参数上下文
      * @author Lucifaer
-     * @version 3.0
-    */
+     */
     void stopTask(ShellContext shellContext);
-    
+
     /**
      * listTask方法用于展示相关BaseModel的具体实现
      * @return java.util.Map BaseModel的具体实现
      * @author Lucifaer
-     * @version 3.0
-    */
+     */
     Map listTask();
 }

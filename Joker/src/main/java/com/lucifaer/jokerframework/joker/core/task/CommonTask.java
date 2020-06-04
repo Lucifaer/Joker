@@ -1,16 +1,17 @@
 package com.lucifaer.jokerframework.joker.core.task;
 
-import com.lucifaer.jokerframework.sdk.context.Context;
 import com.lucifaer.jokerframework.joker.core.context.JokerContext;
-import com.lucifaer.jokerframework.sdk.context.ShellContext;
 import com.lucifaer.jokerframework.joker.core.shell.ShellHelper;
+import com.lucifaer.jokerframework.sdk.context.Context;
+import com.lucifaer.jokerframework.sdk.context.ShellContext;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 /**
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 @Component
 public class CommonTask implements Task {
@@ -25,13 +26,13 @@ public class CommonTask implements Task {
     @Override
     public void createTask(ShellContext shellContext) {
         jokerContext.sessionRegister(shellContext);
-        jokerContext.currentShell = shellContext;
+        jokerContext.setCurrentShell(shellContext);
         shellHelper.echoSuccess("Create " + shellContext.getContextName() + " session");
     }
 
     @Override
     public void stopTask(ShellContext shellContext) {
-        jokerContext.currentShell = null;
+        jokerContext.setCurrentShell(null);
     }
 
     @Override

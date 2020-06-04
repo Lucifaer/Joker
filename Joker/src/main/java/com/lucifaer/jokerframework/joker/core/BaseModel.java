@@ -1,16 +1,20 @@
 package com.lucifaer.jokerframework.joker.core;
 
-import com.lucifaer.jokerframework.sdk.api.Model;
-import org.springframework.stereotype.Component;
+import com.lucifaer.jokerframework.sdk.model.Model;
 
 /**
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
-@Component
 public abstract class BaseModel<T> implements Model {
     @Override
-    public String getModelTypeName() {
+    public String getModelType() {
+        return null;
+    }
+
+    @Override
+    public String getModelName() {
         return null;
     }
 }

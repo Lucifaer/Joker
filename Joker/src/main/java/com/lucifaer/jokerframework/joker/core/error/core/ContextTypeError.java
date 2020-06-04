@@ -1,14 +1,14 @@
-package com.lucifaer.jokerframework.joker.core.error.common;
+package com.lucifaer.jokerframework.joker.core.error.core;
 
 import com.lucifaer.jokerframework.joker.core.error.JokerException;
 
 /**
- * 处理ContextType不符合期望类型的异常
  * @author Lucifaer
- * @version 3.0
+ * @version 1.0.0.RELEASE
+ * @since 2020/6/3
  */
 public class ContextTypeError extends JokerException {
     public ContextTypeError(String expectedType, String contextType) {
-        super("Expected type is " + expectedType + " , not " + contextType);
+        super("Expected type is " + expectedType + " , not " + contextType + ".");
     }
 }

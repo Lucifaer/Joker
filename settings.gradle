@@ -1,4 +1,4 @@
 rootProject.name = 'JokerFrameWork'
 include 'JokerSDK'
 include 'Joker'
-project(':JokerSDK').projectDir=new File(settingsDir, 'JokerSDK')
+
