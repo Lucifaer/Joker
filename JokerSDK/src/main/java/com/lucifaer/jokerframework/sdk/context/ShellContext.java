@@ -28,6 +28,14 @@ public class ShellContext implements Context {
         this.params = params;
     }
 
+    public Stack<String> getCommandNode() {
+        return commandNode;
+    }
+
+    public void setCommandNode(Stack<String> commandNode) {
+        this.commandNode = commandNode;
+    }
+
     @Override
     public String getContextName() {
         return contextName;

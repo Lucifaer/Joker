@@ -7,6 +7,8 @@ import com.lucifaer.jokerframework.joker.core.error.server.ServerContextNameNotF
 import com.lucifaer.jokerframework.joker.core.server.Server;
 import com.lucifaer.jokerframework.joker.core.shell.ShellThrowableHandler;
 import com.lucifaer.jokerframework.sdk.context.Context;
+import com.lucifaer.jokerframework.sdk.context.ShellContext;
+import jdk.nashorn.tools.Shell;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public class JokerContext implements Context {
 
     private String contextName = "root";
     private String contextType = "root";
-    private Context currentShell = null;
+    private Context currentShell = new ShellContext();
 
     private Map<String, Map> contextMap = new HashMap<>();
     private Map<String, Context> sessionMap = new HashMap<>();
