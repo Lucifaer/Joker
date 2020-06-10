@@ -1,3 +1,11 @@
+### 2020.06.10
+
+1. 修复`PluginScanner`所导入插件数据结构为`PluginModel`，更改为`ExploitModel`
+2. 新增`help`指令用于展示不同命令节点可用的命令。resolve #5
+3. 新增`show_options`子命令用于展示exploit插件所需填写的参数，同时输出插件编写者自定义帮助文档
+4. 新增实例化对象缓存机制，防止重复实例化对象影响性能
+5. 更新版本号为1.0.1.RELEASE
+
 ### 2020.06.08
 
 1. 增加HelpCommand，用于完善`help`指令
