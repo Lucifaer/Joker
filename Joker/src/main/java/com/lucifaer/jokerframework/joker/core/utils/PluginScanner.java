@@ -1,5 +1,6 @@
 package com.lucifaer.jokerframework.joker.core.utils;
 
+import com.lucifaer.jokerframework.sdk.model.ExploitModel;
 import com.lucifaer.jokerframework.sdk.model.PluginModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,10 @@ public class PluginScanner<T extends PluginModel> {
         Properties p = new Properties();
         p.load(in);
 
-        PluginModel exploitModel = new PluginModel();
+//        由于ExploitModel继承与PluginModel，所以如果使用PluginModel初始化，则最终在map中注册的值都为PluginModel类型，而非期望的ExploitModel类型
+//        这里存在一些泛用性问题，如果强制初始化ExploitModel的话，会严重影响泛用性，目前只针对ExploitPlugin的话是没有什么问题。
+//        PluginModel exploitModel = new PluginModel();
+        ExploitModel exploitModel = new ExploitModel();
         exploitModel.setModelName(p.getProperty("pluginName"));
         exploitModel.setReferencePath(p.getProperty("referencePath"));
         exploitModel.setClassLoader(classLoader);

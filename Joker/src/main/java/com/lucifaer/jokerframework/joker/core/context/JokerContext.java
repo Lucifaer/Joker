@@ -6,9 +6,9 @@ import com.lucifaer.jokerframework.joker.core.error.server.ServerContextNameAlre
 import com.lucifaer.jokerframework.joker.core.error.server.ServerContextNameNotFound;
 import com.lucifaer.jokerframework.joker.core.server.Server;
 import com.lucifaer.jokerframework.joker.core.shell.ShellThrowableHandler;
+import com.lucifaer.jokerframework.sdk.api.Exploit;
 import com.lucifaer.jokerframework.sdk.context.Context;
 import com.lucifaer.jokerframework.sdk.context.ShellContext;
-import jdk.nashorn.tools.Shell;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -33,6 +33,8 @@ public class JokerContext implements Context {
     private Map<String, Map> contextMap = new HashMap<>();
     private Map<String, Context> sessionMap = new HashMap<>();
     private Map<String, Map> serverMap = new HashMap<>();
+
+    private Map<String, Exploit> cachedExploitMap = new HashMap<>();
 
     public void sessionRegister(Context context) {
         try {
@@ -127,6 +129,14 @@ public class JokerContext implements Context {
 
     public void setServerMap(Map<String, Map> serverMap) {
         this.serverMap = serverMap;
+    }
+
+    public Map<String, Exploit> getCachedExploitMap() {
+        return cachedExploitMap;
+    }
+
+    public void setCachedExploitMap(Map<String, Exploit> cachedExploitMap) {
+        this.cachedExploitMap = cachedExploitMap;
     }
 
     @Override
