@@ -1,3 +1,7 @@
+### 2020.06.12
+1. JokerSDK新增命令行参数解析支持
+2. 支持JokerSDK直接运行
+
 ### 2020.06.10
 
 1. 修复`PluginScanner`所导入插件数据结构为`PluginModel`，更改为`ExploitModel`
