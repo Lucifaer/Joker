@@ -46,13 +46,13 @@ public class DocumentationHelper {
         for (String key : requiredParams) {
             switch (key) {
                 case "targetUrl":
-                    documentResult.add("   [targetUrl]                 " + params.getOrDefault("targetUrl", null));
+                    documentResult.add("   [targetUrl]                  " + params.getOrDefault("targetUrl", null));
                     break;
                 case "targetPort":
                     documentResult.add("   [targetPort]                 " + params.getOrDefault("targetPort", null));
                     break;
                 case "command":
-                    documentResult.add("   [command]                   " + params.getOrDefault("command", null));
+                    documentResult.add("   [command]                    " + params.getOrDefault("command", null));
                     break;
                 default:
                     documentResult.add("   [" + key + "]                   " + params.getOrDefault(key, null));
