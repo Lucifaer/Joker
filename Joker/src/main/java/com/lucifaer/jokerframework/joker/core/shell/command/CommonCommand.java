@@ -1,13 +1,18 @@
 package com.lucifaer.jokerframework.joker.core.shell.command;
 
 import com.lucifaer.jokerframework.joker.core.context.JokerContext;
+import com.lucifaer.jokerframework.joker.core.error.core.SessionContextNotFound;
 import com.lucifaer.jokerframework.joker.core.shell.ShellHelper;
+import com.lucifaer.jokerframework.joker.core.shell.ShellThrowableHandler;
 import com.lucifaer.jokerframework.joker.core.task.CommonTask;
 import com.lucifaer.jokerframework.joker.core.task.ExploitTask;
 import com.lucifaer.jokerframework.joker.core.task.PluginInitTask;
+import com.lucifaer.jokerframework.sdk.context.Context;
 import com.lucifaer.jokerframework.sdk.context.ShellContext;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+
+import java.util.Map;
 
 /**
  * @author Lucifaer
@@ -21,13 +26,15 @@ public class CommonCommand {
     private final ExploitTask exploitTask;
     private final PluginInitTask pluginInitTask;
     private final ShellHelper shellHelper;
+    private final ShellThrowableHandler shellThrowableHandler;
 
-    public CommonCommand(JokerContext jokerContext, CommonTask commonTask, ExploitTask exploitTask, PluginInitTask pluginInitTask, ShellHelper shellHelper) {
+    public CommonCommand(JokerContext jokerContext, CommonTask commonTask, ExploitTask exploitTask, PluginInitTask pluginInitTask, ShellHelper shellHelper, ShellThrowableHandler shellThrowableHandler) {
         this.jokerContext = jokerContext;
         this.commonTask = commonTask;
         this.exploitTask = exploitTask;
         this.pluginInitTask = pluginInitTask;
         this.shellHelper = shellHelper;
+        this.shellThrowableHandler = shellThrowableHandler;
     }
 
     @ShellMethod(value = "set param", key = "set", group = "Common")
@@ -65,5 +72,25 @@ public class CommonCommand {
             default:
                 shellHelper.echoInfo("list task");
         }
+    }
+
+    @ShellMethod(value = "checkout session", key = "checkout", group = "Common")
+    public void checkout(String sessionId) {
+        Map<String, Context> sessionMap = jokerContext.getSessionMap();
+        try {
+            if (sessionMap.containsKey(sessionId)) {
+                jokerContext.setCurrentShell(sessionMap.get(sessionId));
+            }
+            else {
+                throw new SessionContextNotFound(sessionId);
+            }
+        } catch (SessionContextNotFound e) {
+            shellThrowableHandler.handleThrowable(e);
+        }
+    }
+
+    @ShellMethod(value = "exit current session", key = "q", group = "Common")
+    public void q() {
+        jokerContext.setCurrentShell(null);
     }
 }

@@ -51,6 +51,12 @@ public class HelpCommand implements Help.Command {
                         "   - exploit                           list exist exploit plugins",
                 };
                 break;
+            case "checkout":
+                help = new String[] {
+                        "checkout [sessionId]",
+                        "   sessionId                           the name of existed session",
+                };
+                break;
             default:
                 assert currentContext != null;
                 if ("exploit".equals(currentContext.getContextType())) {
@@ -65,8 +71,10 @@ public class HelpCommand implements Help.Command {
                     help = new String[] {
                             "exp [exploitContextName]               create an exploitContext to use exploit plugin",
                             "list [type]                            list exist type info",
+                            "checkout [sessionId]                   checkout session",
                             "clear                                  clear the shell screen",
                             "exit                                   exit joker",
+                            "q                                      exit current session",
                             "help [command]                         show command help",
                     };
                 }
