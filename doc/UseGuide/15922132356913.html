@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  开启服务 - Joker Doc
+  自定义ConsoleModel - Joker Doc
   
   </title>
  <meta name="description" content="Joker Official Doc">
@@ -49,7 +49,7 @@
           
             <li><a title="基础功能概览" href="15877193791494.html">基础功能概览</a></li>
           
-            <li><a title="启动时插件加载" href="15877194041059.html">启动时插件加载</a></li>
+            <li><a title="用时插件加载" href="15877194041059.html">用时插件加载</a></li>
           
             <li><a title="交互式命令行" href="15877194364370.html">交互式命令行</a></li>
           
@@ -67,8 +67,6 @@
           
             <li><a title="使用exp" href="15877200799086.html">使用exp</a></li>
           
-            <li><a title="开启服务" href="15877145916173.html">开启服务</a></li>
-          
 
       
         <li class="divider"></li>
@@ -77,8 +75,6 @@
           
             <li><a title="Gradle打包指南" href="15877200122997.html">Gradle打包指南</a></li>
           
-            <li><a title="Maven打包指南" href="15877201011471.html">Maven打包指南</a></li>
-          
 
       
         <li class="divider"></li>
@@ -86,8 +82,6 @@
 
           
             <li><a title="JokerSDK 简介" href="15878694626010.html">JokerSDK 简介</a></li>
-          
-            <li><a title="Annotaion（注解）" href="15877201204168.html">Annotaion（注解）</a></li>
           
             <li><a title="API（基础接口）" href="15878704637257.html">API（基础接口）</a></li>
           
@@ -111,6 +105,8 @@
           
             <li><a title="Quick Start" href="15878734053106.html">Quick Start</a></li>
           
+            <li><a title="自定义ConsoleModel" href="15922132356913.html">自定义ConsoleModel</a></li>
+          
 
       
       </ul>
@@ -132,7 +128,7 @@
                         
                           <li><a title="基础功能概览" href="15877193791494.html">基础功能概览</a></li>
                         
-                          <li><a title="启动时插件加载" href="15877194041059.html">启动时插件加载</a></li>
+                          <li><a title="用时插件加载" href="15877194041059.html">用时插件加载</a></li>
                         
                           <li><a title="交互式命令行" href="15877194364370.html">交互式命令行</a></li>
                         
@@ -148,23 +144,17 @@
                         
                           <li><a title="使用exp" href="15877200799086.html">使用exp</a></li>
                         
-                          <li><a title="开启服务" href="15877145916173.html">开启服务</a></li>
-                        
 
                     
                       <li class="side-title"><span>JokerFrameWork打包指南</span></li>
                         
                           <li><a title="Gradle打包指南" href="15877200122997.html">Gradle打包指南</a></li>
                         
-                          <li><a title="Maven打包指南" href="15877201011471.html">Maven打包指南</a></li>
-                        
 
                     
                       <li class="side-title"><span>JokerSDK指南</span></li>
                         
                           <li><a title="JokerSDK 简介" href="15878694626010.html">JokerSDK 简介</a></li>
-                        
-                          <li><a title="Annotaion（注解）" href="15877201204168.html">Annotaion（注解）</a></li>
                         
                           <li><a title="API（基础接口）" href="15878704637257.html">API（基础接口）</a></li>
                         
@@ -184,6 +174,8 @@
                         
                           <li><a title="Quick Start" href="15878734053106.html">Quick Start</a></li>
                         
+                          <li><a title="自定义ConsoleModel" href="15922132356913.html">自定义ConsoleModel</a></li>
+                        
 
                     
                   </ul>
@@ -194,8 +186,70 @@
             <div class="large-9 medium-9 columns">
 
  <div class="markdown-body">
-<h1>开启服务</h1>
+<h1>自定义ConsoleModel</h1>
 
+<p><code>ConsoleModel</code>主要是用于定义exp插件所需的参数模型，为一个纯pojo类。其主要负责定义exp插件所需参数，并负责完成exp插件单独运行时的参数解析，所以<code>ConsoleModel</code>中的<strong>属性必须与exp插件的requiredParams中的参数相同</strong>。</p>
+
+<h2 id="toc_0">0x01 插件参数解析调用逻辑</h2>
+
+<p>一般情况下，exp插件必须的三个参数为：</p>
+
+<ul>
+<li>targetUrl：目标url</li>
+<li>targetPort：目标端口</li>
+<li>command：执行命令</li>
+</ul>
+
+<p>其在exp中插件的对应设置为：</p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922742534142.jpg" alt=""/></p>
+
+<p><code>JokerSDK</code>默认提供了<code>DefaultConsoleModel</code>用于表示以上三种参数的参数模型：</p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922744091995.jpg" alt=""/></p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922746208808.jpg" alt=""/></p>
+
+<p>可以看到在<code>ConsoleBaseModel</code>中定义了如何承接以上三种参数，同时定义了对应的参数解析标志位。在利用<code>@Parameter</code>时需要注意：</p>
+
+<p><strong>description字段的值需要与exp插件中requiredParams所设置的值相同</strong>，这样才能保证后续参数解析流程正常的获取到对应值。</p>
+
+<h2 id="toc_1">0x02 自定义ConsoleModel</h2>
+
+<p>当<code>DefaultConsoleModel</code>不能满足插件编写者的需求时，插件作者可以通过自定义<code>ConsoleModel</code>完成参数映射。</p>
+
+<p>如只需要在<code>targetUrl</code>、<code>targetPort</code>、<code>command</code>三个参数的基础上进行拓展，只需要继承<code>DefaultConsoleModel</code>即可，如：</p>
+
+<pre><code class="language-java">public class CustomConsoleModel extends DefaultConsoleBaseModel {
+    @Parameter(names = &quot;-d&quot;, description = &quot;description&quot;)
+    protected String description;
+
+    @Override
+    public String getTargetUrl() {
+        return super.getTargetUrl();
+    }
+
+    @Override
+    public String getTargetPort() {
+        return super.getTargetPort();
+    }
+
+    @Override
+    public String getCommand() {
+        return super.getCommand();
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+}
+</code></pre>
+
+<p>如果需要完全自定义参数的话，可以模仿<code>ConsoleBaseModel</code>直接自定义<code>ConsoleModel</code>。</p>
+
+<h2 id="toc_2">0x03 更多自定义选项</h2>
+
+<p>exp插件的参数解析模块利用了<code>JCommaner</code>项目，如有更多需要自定义的选项的话，请参考<a href="https://jcommander.org/">JCommander官方文档</a></p>
 
 
 </div>
@@ -207,16 +261,13 @@
   <div class="large-6 columns">
 	<div class="text-left" style="padding:15px 0px;">
 		
-	        <a href="15878704637257.html"  title="Previous Post: API（基础接口）">&laquo; API（基础接口）</a>
+	        <a href="15878723720179.html"  title="Previous Post: Context（上下文）">&laquo; Context（上下文）</a>
 	    
 	</div>
   </div>
   <div class="large-6 columns">
 	<div class="text-right" style="padding:15px 0px;">
 		
-	        <a href="15877195191884.html" 
-	        title="Next Post: ClassLoader隔离使用插件">ClassLoader隔离使用插件 &raquo;</a>
-	    
 	</div>
   </div>
 </div>
@@ -228,7 +279,7 @@
 </div>
 <script type="text/javascript">
 	$(function(){
-		var currentURL = '15877145916173.html';
+		var currentURL = '15922132356913.html';
 		$('#side-nav a').each(function(){
 			if($(this).attr('href') == currentURL){
 				$(this).parent().addClass('active');
@@ -274,6 +325,8 @@ Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
 
 
 
+
+<script src="asset/prism.js"></script>
 
 
 <style type="text/css">

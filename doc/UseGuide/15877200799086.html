@@ -49,7 +49,7 @@
           
             <li><a title="基础功能概览" href="15877193791494.html">基础功能概览</a></li>
           
-            <li><a title="启动时插件加载" href="15877194041059.html">启动时插件加载</a></li>
+            <li><a title="用时插件加载" href="15877194041059.html">用时插件加载</a></li>
           
             <li><a title="交互式命令行" href="15877194364370.html">交互式命令行</a></li>
           
@@ -67,8 +67,6 @@
           
             <li><a title="使用exp" href="15877200799086.html">使用exp</a></li>
           
-            <li><a title="开启服务" href="15877145916173.html">开启服务</a></li>
-          
 
       
         <li class="divider"></li>
@@ -77,8 +75,6 @@
           
             <li><a title="Gradle打包指南" href="15877200122997.html">Gradle打包指南</a></li>
           
-            <li><a title="Maven打包指南" href="15877201011471.html">Maven打包指南</a></li>
-          
 
       
         <li class="divider"></li>
@@ -86,8 +82,6 @@
 
           
             <li><a title="JokerSDK 简介" href="15878694626010.html">JokerSDK 简介</a></li>
-          
-            <li><a title="Annotaion（注解）" href="15877201204168.html">Annotaion（注解）</a></li>
           
             <li><a title="API（基础接口）" href="15878704637257.html">API（基础接口）</a></li>
           
@@ -111,6 +105,8 @@
           
             <li><a title="Quick Start" href="15878734053106.html">Quick Start</a></li>
           
+            <li><a title="自定义ConsoleModel" href="15922132356913.html">自定义ConsoleModel</a></li>
+          
 
       
       </ul>
@@ -132,7 +128,7 @@
                         
                           <li><a title="基础功能概览" href="15877193791494.html">基础功能概览</a></li>
                         
-                          <li><a title="启动时插件加载" href="15877194041059.html">启动时插件加载</a></li>
+                          <li><a title="用时插件加载" href="15877194041059.html">用时插件加载</a></li>
                         
                           <li><a title="交互式命令行" href="15877194364370.html">交互式命令行</a></li>
                         
@@ -148,23 +144,17 @@
                         
                           <li><a title="使用exp" href="15877200799086.html">使用exp</a></li>
                         
-                          <li><a title="开启服务" href="15877145916173.html">开启服务</a></li>
-                        
 
                     
                       <li class="side-title"><span>JokerFrameWork打包指南</span></li>
                         
                           <li><a title="Gradle打包指南" href="15877200122997.html">Gradle打包指南</a></li>
                         
-                          <li><a title="Maven打包指南" href="15877201011471.html">Maven打包指南</a></li>
-                        
 
                     
                       <li class="side-title"><span>JokerSDK指南</span></li>
                         
                           <li><a title="JokerSDK 简介" href="15878694626010.html">JokerSDK 简介</a></li>
-                        
-                          <li><a title="Annotaion（注解）" href="15877201204168.html">Annotaion（注解）</a></li>
                         
                           <li><a title="API（基础接口）" href="15878704637257.html">API（基础接口）</a></li>
                         
@@ -183,6 +173,8 @@
                       <li class="side-title"><span>exp插件编写指南</span></li>
                         
                           <li><a title="Quick Start" href="15878734053106.html">Quick Start</a></li>
+                        
+                          <li><a title="自定义ConsoleModel" href="15922132356913.html">自定义ConsoleModel</a></li>
                         
 
                     
@@ -219,7 +211,7 @@
 
 <p>会输出类似于如下的信息：</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/28/15880571401017.jpg" alt=""/></p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922058704915.jpg" alt=""/></p>
 
 <p>列举出的插件名都为后续在<code>exp</code>上下文中需要设置的<code>exploitName</code>的名称。</p>
 
@@ -227,7 +219,7 @@
 
 <p><code>Joker</code>中<font color="red">exp</font>命令用于创建一个<code>exp</code>上下文，该上下文用于缓存用户设置的命令。</p>
 
-<p>用户在创建<code>exp</code>上下文时必须为该上下文指定一个<code>sessionId</code>，该<code>sessionId</code>用于唯一指定该<code>exp</code>上下文。后续可以利用<code>checkout</code>命令（v4版本还未支持）切换上下文，完成重复攻击。</p>
+<p>用户在创建<code>exp</code>上下文时必须为该上下文指定一个<code>sessionId</code>，该<code>sessionId</code>用于唯一指定该<code>exp</code>上下文。后续可以利用<code>checkout</code>命令（目前版本还未支持）切换上下文，完成重复攻击。</p>
 
 <p>具体命令为：</p>
 
@@ -252,21 +244,27 @@
 </ul>
 
 <blockquote>
-<p>关于如何确定<code>requiredParams</code>，后续版本中会更新<code>show</code>指令来将exploit插件中的<code>documentation</code>打印出来。</p>
+<p><del>关于如何确定<code>requiredParams</code>，后续版本中会更新<code>show</code>指令来将exploit插件中的<code>documentation</code>打印出来。</del></p>
 
 <p><code>requiredParams</code>是在插件内部确定的，但是在使用时必须填写，否则会返回所需参数缺失的错误提示</p>
 </blockquote>
 
-<p>以<code>cve-2020-2555(12.2.1.3)</code>插件为例，可以首先确定插件的<code>requiredParams</code>包含什么：</p>
+<p><code>Joker</code>中提供了<font color="red">show_options</font>命令用于查看当前插件的应设置的参数，下面以<code>cve-2020-2555(12.2.1.3)</code>插件为例，来具体说明如何进行相关参数查询和参数设置。</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/28/15880583184216.jpg" alt=""/></p>
+<p>首先利用<code>set exploitName [exploitName]</code>来设定需要使用的exp插件：</p>
 
-<p>可以看到是必须由用户指定<code>targetUrl</code>、<code>targetPort</code>、<code>command</code>三个参数。在Joker中使用<code>set</code>命令对参数进行指定：</p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922069247308.jpg" alt=""/></p>
+
+<p>在设置了插件后，可以利用<code>show_options</code>命令来查看插件所需要设置的参数：</p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922069408760.jpg" alt=""/></p>
+
+<p>在Joker中使用<code>set</code>命令对参数进行指定：</p>
 
 <pre><code class="language-text">set [参数名] [参数值]
 </code></pre>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/28/15880585563137.jpg" alt=""/></p>
+<p><img src="media/15877200799086/15880585563137.jpg" alt=""/></p>
 
 <h2 id="toc_4">0x04 执行exp上下文</h2>
 
@@ -277,7 +275,7 @@
 
 <p>如：</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/28/15880587208964.jpg" alt=""/></p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922074083597.jpg" alt=""/></p>
 
 
 </div>

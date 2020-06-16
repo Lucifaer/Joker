@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  启动时插件加载 - Joker Doc
+  用时插件加载 - Joker Doc
   
   </title>
  <meta name="description" content="Joker Official Doc">
@@ -49,7 +49,7 @@
           
             <li><a title="基础功能概览" href="15877193791494.html">基础功能概览</a></li>
           
-            <li><a title="启动时插件加载" href="15877194041059.html">启动时插件加载</a></li>
+            <li><a title="用时插件加载" href="15877194041059.html">用时插件加载</a></li>
           
             <li><a title="交互式命令行" href="15877194364370.html">交互式命令行</a></li>
           
@@ -67,8 +67,6 @@
           
             <li><a title="使用exp" href="15877200799086.html">使用exp</a></li>
           
-            <li><a title="开启服务" href="15877145916173.html">开启服务</a></li>
-          
 
       
         <li class="divider"></li>
@@ -77,8 +75,6 @@
           
             <li><a title="Gradle打包指南" href="15877200122997.html">Gradle打包指南</a></li>
           
-            <li><a title="Maven打包指南" href="15877201011471.html">Maven打包指南</a></li>
-          
 
       
         <li class="divider"></li>
@@ -86,8 +82,6 @@
 
           
             <li><a title="JokerSDK 简介" href="15878694626010.html">JokerSDK 简介</a></li>
-          
-            <li><a title="Annotaion（注解）" href="15877201204168.html">Annotaion（注解）</a></li>
           
             <li><a title="API（基础接口）" href="15878704637257.html">API（基础接口）</a></li>
           
@@ -111,6 +105,8 @@
           
             <li><a title="Quick Start" href="15878734053106.html">Quick Start</a></li>
           
+            <li><a title="自定义ConsoleModel" href="15922132356913.html">自定义ConsoleModel</a></li>
+          
 
       
       </ul>
@@ -132,7 +128,7 @@
                         
                           <li><a title="基础功能概览" href="15877193791494.html">基础功能概览</a></li>
                         
-                          <li><a title="启动时插件加载" href="15877194041059.html">启动时插件加载</a></li>
+                          <li><a title="用时插件加载" href="15877194041059.html">用时插件加载</a></li>
                         
                           <li><a title="交互式命令行" href="15877194364370.html">交互式命令行</a></li>
                         
@@ -148,23 +144,17 @@
                         
                           <li><a title="使用exp" href="15877200799086.html">使用exp</a></li>
                         
-                          <li><a title="开启服务" href="15877145916173.html">开启服务</a></li>
-                        
 
                     
                       <li class="side-title"><span>JokerFrameWork打包指南</span></li>
                         
                           <li><a title="Gradle打包指南" href="15877200122997.html">Gradle打包指南</a></li>
                         
-                          <li><a title="Maven打包指南" href="15877201011471.html">Maven打包指南</a></li>
-                        
 
                     
                       <li class="side-title"><span>JokerSDK指南</span></li>
                         
                           <li><a title="JokerSDK 简介" href="15878694626010.html">JokerSDK 简介</a></li>
-                        
-                          <li><a title="Annotaion（注解）" href="15877201204168.html">Annotaion（注解）</a></li>
                         
                           <li><a title="API（基础接口）" href="15878704637257.html">API（基础接口）</a></li>
                         
@@ -184,6 +174,8 @@
                         
                           <li><a title="Quick Start" href="15878734053106.html">Quick Start</a></li>
                         
+                          <li><a title="自定义ConsoleModel" href="15922132356913.html">自定义ConsoleModel</a></li>
+                        
 
                     
                   </ul>
@@ -194,22 +186,28 @@
             <div class="large-9 medium-9 columns">
 
  <div class="markdown-body">
-<h1>启动时插件加载</h1>
+<h1>用时插件加载</h1>
 
-<p>由于项目处于初期阶段，目前的exp还比较少，所以采用的是<strong>加载前将插件都加载进来</strong>的加载方式。加载步骤可以简单的整理为如下几步：</p>
+<p>在<code>JokerFrameWork</code> 1.0.2.REALSE版本中更改了插件加载逻辑，目前采用用时加载插件的形式。</p>
+
+<p>加载逻辑可以简单的总结如下：</p>
 
 <ol>
 <li><code>JokerFrameWork</code>会检测<code>Joker.jar</code>同级目录下是否存在<code>exploitLib</code>目录</li>
 <li>如果存在<code>exploitLib</code>目录，则给每一个<code>.jar</code>文件分配一个<code>ClassLoader</code>用于加载该<code>.jar</code>文件中的所有<code>.class</code>文件</li>
-<li>遍历所有已加载的<code>.class</code>文件，找到存在注解<code>@Exploitor</code>的<code>.class</code>文件，并获取其插件名（exp名）</li>
-<li>将获取到的插件名作为key，将该插件对应的<code>ClassLoader</code>、<code>ReferencePath</code>（引用名）作为值保存在Map中</li>
+<li>遍历所有的<code>.jar</code>文件中的<code>exploitPlugin.properties</code>文件，获取插件名、类加载路径等信息。</li>
+<li>将获取到的插件名作为key，将该插件对应的<code>ClassLoader</code>、<code>ReferencePath</code>（引用名）作为值保存在Map中。</li>
 </ol>
 
 <p>以上的流程都发生在<code>ExploitFactory</code>的初始化中。</p>
 
+<p>在调用<code>exp</code>命令设置一个新的<code>exploit Context</code>后，当利用<code>set exploitName</code>命令设置插件时，完成插件类的实例化。</p>
+
+<p>最终在使用<code>exploit [exp名]</code>时，完成插件的调用。</p>
+
 <p>加载成功结果如下：</p>
 
-<p><img src="http://image-lucifaer.test.upcdn.net/2020/04/26/15877144006299.jpg" alt=""/></p>
+<p><img src="http://image-lucifaer.test.upcdn.net/2020/06/16/15921920871305.jpg" alt=""/></p>
 
 
 </div>
