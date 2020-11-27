@@ -12,86 +12,21 @@
 
 ## 0x02 使用
 
-### 2.1 从源码编译
+具体使用方式请查看`doc/UseGuide`下的文档
 
-在项目根目录直接运行：
+## 0x03 目前状态
 
-```
-./gradlew build
-```
+目前在github上公开的版本为稀释出来的版本，可以稳定运行。
 
-如果遇到测试不通过的情况可以执行以下命令跳过测试：
+## 0x04 未来计划
 
-```
-./gradlew build -x test
-```
+目前正在重构该框架，将其变为一个exp及payload（如利用链、回显链）的知识库，方便快速利用框架生成各种exp代码。
 
-编译生成的jar包在`./build/libs/`
+- [ ] 增加`network`模块负责各类请求的server/client端
+- [ ] 重构调度层代码，支持扫描等其他模块的hotswap支持
+- [ ] 增加`gadget`代码生成器，思考不同gadget通用构建适配器的写法
+- [ ] 完成`core/server/cli/web`的分离，支持web界面及cli端
 
-### 2.2 server使用案例
+...
 
-1. 查看可创建服务
-
-    ```shell script
-     list server
-    ```
-2. 查看已经存在的服务
-
-    ```
-     list server_process
-    ```
-
-3. 创建server session（也就是一个shellContext）用于接收存储参数
-
-    ```
-     server ldap
-    ```
-  
-4. 选择想要创建的服务
-
-    ```
-     set serverName ldap-server
-    ```
-   
-5. 设置服务开启的url和端口信息：
-
-    ldap默认`0.0.0.0:1389`
-    rmi默认`0.0.0.0:2000`
-
-    ```
-     set serverPort 8999
-    ```
-
-6. 设置必须参数：
-
-    ldap需要设置`remote_className`， `remote_FactoryLocation`
-    
-    rmi需要设置`remote_className`，`remote_FactoryName`，`remote_FactoryLocation`
-    
-    主要用于指定远程类名及地址。
-    
-    ```
-     set remote_className Exploit
-     set remote_FactoryLocation http://127.0.0.1:9999
-    ```
-
-7. 开启服务：
-
-    ```
-     run ldap
-    ```   
-
-8. 最后开启远程服务绑定自己的恶意类即可
-
-最终效果：
-
-![](./img/jokerserver.jpg)
-
-查看端口占用情况：
-
-![](./img/listserver_process.jpg)
-
-## 3. next
-
-1. 后续会进行文档编写，目前只是demo版本
-2. 调整框架结构，支持插件式热插拔
+想法是实现Java的MSF，而且更加贴合安全研究人员的成果留存，以及使用者的便捷度。
